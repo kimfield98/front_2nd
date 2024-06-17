@@ -15,7 +15,7 @@ beforeEach(() => {
 
 describe('다양한 hook을 이용하여 테스트코드를 통과할 수 있도록 해봅시다.', () => {
   describe('useState > ', () => {
-    test.only('setState의 내용을 개선하여, 증가 버튼을 누르면 count의 값이 증가하도록 한다.', () => {
+    test('setState의 내용을 개선하여, 증가 버튼을 누르면 count의 값이 증가하도록 한다.', () => {
       render(<UseStateTest/>);
 
       expect(document.body.innerHTML).toBe('<div><div>count: 1<button>증가</button></div></div>');
@@ -29,7 +29,7 @@ describe('다양한 hook을 이용하여 테스트코드를 통과할 수 있도
   })
 
   describe('useMemo, memo > ', () => {
-    test('useMemo를 사용하여 불필요한 값 연산을 방지한다.', async () => {
+    test.only('useMemo를 사용하여 불필요한 값 연산을 방지한다.', async () => {
       const spyRepeatMeow = vi.spyOn(useMemoTestUtils, 'repeatMeow');
       const spyRepeatBarked = vi.spyOn(useMemoTestUtils, 'repeatBarked');
 
