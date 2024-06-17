@@ -29,7 +29,7 @@ describe('다양한 hook을 이용하여 테스트코드를 통과할 수 있도
   })
 
   describe('useMemo, memo > ', () => {
-    test.only('useMemo를 사용하여 불필요한 값 연산을 방지한다.', async () => {
+    test('useMemo를 사용하여 불필요한 값 연산을 방지한다.', async () => {
       const spyRepeatMeow = vi.spyOn(useMemoTestUtils, 'repeatMeow');
       const spyRepeatBarked = vi.spyOn(useMemoTestUtils, 'repeatBarked');
 
@@ -60,7 +60,7 @@ describe('다양한 hook을 이용하여 테스트코드를 통과할 수 있도
       expect(spyRepeatBarked).toHaveBeenCalledTimes(2);
     })
 
-    test('PureComponent를 사용하여 불필요한 렌더링을 방지한다.', async () => {
+    test.only('PureComponent를 사용하여 불필요한 렌더링을 방지한다.', async () => {
       const spyRepeatMeow = vi.spyOn(useMemoTestUtils, 'repeatMeow');
       const spyRepeatBarked = vi.spyOn(useMemoTestUtils, 'repeatBarked');
 
