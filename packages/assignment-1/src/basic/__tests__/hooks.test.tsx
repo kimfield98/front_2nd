@@ -93,7 +93,7 @@ describe('다양한 hook을 이용하여 테스트코드를 통과할 수 있도
   })
 
   describe('useCallback, memo > ', () => {
-    test.only('useCallback과 PureComponent를 사용하여 불필요한 렌더링을 방지한다.', async () => {
+    test('useCallback과 PureComponent를 사용하여 불필요한 렌더링을 방지한다.', async () => {
       const spyCallMeow = vi.spyOn(UseCallbackTestUtils, 'callMeow');
       const spyCallBark = vi.spyOn(UseCallbackTestUtils, 'callBark');
 
