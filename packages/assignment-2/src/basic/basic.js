@@ -8,7 +8,8 @@ export function deepEquals(target1, target2) {
 
 
 export function createNumber1(n) {
-  return n;
+  const numObj = new Number(n)
+  return numObj;
 }
 
 export function createNumber2(n) {
