@@ -13,7 +13,15 @@ export function createNumber1(n) {
 }
 
 export function createNumber2(n) {
-  return n;
+  return {
+    value: n.toString(),
+    toString: function() {
+      return this.value;
+    },
+    valueOf: function() {
+      return this.value;
+    }
+  };
 }
 
 export function createNumber3(n) {
