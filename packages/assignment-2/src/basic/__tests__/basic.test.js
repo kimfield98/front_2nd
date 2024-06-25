@@ -143,7 +143,7 @@ describe('assignment 2 > basic : 값을 다루기', () => {
       expect(num2 instanceof Number).toBe(false);
     })
 
-    it.only('createNumber3 > ', () => {
+    it('createNumber3 > ', () => {
       const num1 = createNumber3(1);
       const num2 = createNumber3(2);
       expect(1 + num2).toBe(3);

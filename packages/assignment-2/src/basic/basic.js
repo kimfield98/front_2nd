@@ -40,7 +40,28 @@ export function createNumber3(n) {
 }
 
 export class CustomNumber {
+  constructor(n) {
+    if (CustomNumber.instances === undefined) {
+      CustomNumber.instances = {};
+    }
+    if (CustomNumber.instances[n] !== undefined) {
+      return CustomNumber.instances[n];
+    }
+    this.value = n;
+    CustomNumber.instances[n] = this;
+  }
 
+  valueOf() {
+    return this.value;
+  }
+
+  toString() {
+    return this.value.toString();
+  }
+
+  toJSON() {
+    return this.value.toString();
+  }
 }
 
 export function createUnenumerableObject(target) {
