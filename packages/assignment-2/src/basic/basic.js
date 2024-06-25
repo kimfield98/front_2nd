@@ -65,7 +65,14 @@ export class CustomNumber {
 }
 
 export function createUnenumerableObject(target) {
-  return target;
+  const result = {};
+  for (const key of Object.keys(target)) {
+    Object.defineProperty(result, key, {
+      value: target[key],
+      enumerable: false,
+    });
+  }
+  return result;
 }
 
 export function forEach(target, callback) {
