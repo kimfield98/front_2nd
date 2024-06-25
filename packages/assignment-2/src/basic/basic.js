@@ -25,7 +25,18 @@ export function createNumber2(n) {
 }
 
 export function createNumber3(n) {
-  return n;
+  return {
+    value: n,
+    valueOf: function() {
+      return this.value;
+    },
+    toString: function() {
+      return this.value.toString();
+    },
+    toJSON: function() {
+      return `this is createNumber3 => ${this.value}`;
+    }
+  };
 }
 
 export class CustomNumber {
