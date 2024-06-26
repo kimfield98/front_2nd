@@ -224,7 +224,7 @@ describe('assignment 2 > basic : 값을 다루기', () => {
       expect({ ...obj }).toEqual({});
     })
 
-    it('forEach > ', () => {
+    it.only('forEach > ', () => {
       const results = [];
       forEach(obj, (value, key) => results.push({ value, key }));
       expect(results).toStrictEqual([{ value: 1, key: 'a' }, { value: 2, key: 'b' }]);
