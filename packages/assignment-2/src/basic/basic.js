@@ -94,7 +94,25 @@ export function forEach(target, callback) {
 }
 
 export function map(target, callback) {
-
+  if (Array.isArray(target) || target instanceof NodeList) {
+    const result = [];
+    for (let i = 0; i < target.length; i++) {
+      const newValue = !isNaN(Number(target[i])) ? Number(target[i]) : target[i];
+      result.push(callback(newValue, i));
+    }
+    return result;
+  } else if (typeof target === 'object' && target !== null) {
+    const result = {};
+    const propertyArray = Object.getOwnPropertyNames(target);
+    for (let i = 0; i < propertyArray.length; i++) {
+      const key = propertyArray[i];
+      const value = target[key];
+      const newKey = !isNaN(Number(key)) ? Number(key) : key;
+      const newValue = !isNaN(Number(value)) ? Number(value) : value;
+      result[newKey] = callback(newValue, newKey);
+    }
+    return result;
+  }
 }
 
 export function filter(target, callback) {
