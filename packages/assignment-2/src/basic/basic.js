@@ -1,5 +1,27 @@
 export function shallowEquals(target1, target2) {
-  return target1 === target2;
+  if (target1 === target2) return true;
+  if (typeof target1 !== "object" || typeof target2 !== "object" || target1 === null || target2 === null) return false;
+  if ((target1 instanceof Number && target2 instanceof Number) || (target1 instanceof String && target2 instanceof String)) return false;
+
+  if (Array.isArray(target1) && Array.isArray(target2)) {
+    if (target1.length !== target2.length) return false;
+    for (let i = 0; i < target1.length; i++) {
+      if (target1[i] !== target2[i]) return false;
+    }
+    return true;
+  }
+
+  if (target1.__proto__.constructor !== Object && target2.__proto__.constructor !== Object) {
+    return target1.__proto__.constructor === target2.__proto__.constructor;
+  }
+
+  const target1Keys = Object.keys(target1);
+  const target2Keys = Object.keys(target2);
+  if (target1Keys.length !== target2Keys.length) return false;
+  for (let key of target1Keys) {
+    if (!target2Keys.includes(key) || target1[key] !== target2[key]) return false;
+  }
+  return true;
 }
 
 export function deepEquals(target1, target2) {
