@@ -97,7 +97,7 @@ export class CustomNumber {
   static instances = {};
 
   constructor(n) {
-    if (CustomNumber.instances[n] !== undefined) {
+    if (n in CustomNumber.instances) {
       return CustomNumber.instances[n];
     }
     this.value = n;
