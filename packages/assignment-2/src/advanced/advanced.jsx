@@ -10,8 +10,29 @@ export const memo1 = (fn) => {
   return memo1Map.get(fnToString);
 };
 
-export const memo2 = (fn) => fn();
+const memo2Map = new Map();
+const memo2DependenciesMap = new Map();
 
+const getSortedArray = (array) => {
+  return array.slice().sort();
+};
+
+export const memo2 = (fn, dependencies = []) => {
+  const fnToString = fn.toString();
+  const dependenciesToString = JSON.stringify(getSortedArray(dependencies));
+
+  if (!memo2Map.has(fnToString)) {
+    memo2Map.set(fnToString, fn());
+    memo2DependenciesMap.set(fnToString, dependenciesToString);
+  }
+
+  if (memo2DependenciesMap.get(fnToString) !== dependenciesToString) {
+    memo2Map.set(fnToString, fn());
+    memo2DependenciesMap.set(fnToString, dependenciesToString);
+  }
+
+  return memo2Map.get(fnToString);
+};
 
 export const useCustomState = (initValue) => {
   return useState(initValue);

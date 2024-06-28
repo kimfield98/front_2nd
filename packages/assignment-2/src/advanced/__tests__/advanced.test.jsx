@@ -7,7 +7,7 @@ let b;
 
 describe('assignment 2 > advanced', () => {
   describe('값을 캐시하기 > ', () => {
-    it.only.each([
+    it.each([
       { fn: () => Array.from({ length: a }).map((_, k) => k + 1) },
       { fn: () => Array.from({ length: a }).map((_, k) => k * 10) },
     ])('memo1 $fn > ', ({ fn }) => {
@@ -19,7 +19,7 @@ describe('assignment 2 > advanced', () => {
       expect(memo1(fn).length).toBe(1000000);
     })
 
-    it.each([
+    it.only.each([
       { fn: () => Array.from({ length: a * b }).map((_, k) => k + 1) },
       { fn: () => Array.from({ length: a * b }).map((_, k) => k * 10) }
     ])('memo2 $fn > ', ({ fn }) => {
