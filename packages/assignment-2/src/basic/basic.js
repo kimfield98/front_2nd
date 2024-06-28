@@ -94,10 +94,9 @@ export function createNumber3(n) {
 }
 
 export class CustomNumber {
+  static instances = {};
+  
   constructor(n) {
-    if (CustomNumber.instances === undefined) {
-      CustomNumber.instances = {};
-    }
     if (CustomNumber.instances[n] !== undefined) {
       return CustomNumber.instances[n];
     }
