@@ -45,8 +45,8 @@ export function deepEquals(target1, target2) {
     return true;
   }
 
-  if (target1.__proto__.constructor !== Object && target2.__proto__.constructor !== Object) {
-    return target1.__proto__.constructor === target2.__proto__.constructor;
+  if (Object.getPrototypeOf(target1) !== Object.prototype && Object.getPrototypeOf(target2) !== Object.prototype) {
+    return Object.getPrototypeOf(target1) === Object.getPrototypeOf(target2);
   }
 
   const target1Keys = Object.keys(target1);
