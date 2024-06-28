@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { deepEquals } from "../basic/basic";
 
 const memo1Map = new Map(); 
 
@@ -35,8 +36,16 @@ export const memo2 = (fn, dependencies = []) => {
 };
 
 export const useCustomState = (initValue) => {
-  return useState(initValue);
-}
+  const [state, setState] = useState(initValue);
+
+  const customSetState = (newState) => {
+    if (!deepEquals(state, newState)) {
+      setState(newState);
+    }
+  };
+
+  return [state, customSetState];
+};
 
 const textContextDefaultValue = {
   user: null,

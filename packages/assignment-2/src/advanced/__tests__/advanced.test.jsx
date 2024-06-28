@@ -19,7 +19,7 @@ describe('assignment 2 > advanced', () => {
       expect(memo1(fn).length).toBe(1000000);
     })
 
-    it.only.each([
+    it.each([
       { fn: () => Array.from({ length: a * b }).map((_, k) => k + 1) },
       { fn: () => Array.from({ length: a * b }).map((_, k) => k * 10) }
     ])('memo2 $fn > ', ({ fn }) => {
@@ -37,7 +37,7 @@ describe('assignment 2 > advanced', () => {
   })
 
   describe('실제로 값이 달라졌을 때 렌더링하기', () => {
-    it('object > ', async () => {
+    it.only('object > ', async () => {
       let changedValue = 1;
       const mockFn = vi.fn();
 
