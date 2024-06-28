@@ -1,6 +1,14 @@
 import { createContext, useContext, useState } from "react";
 
-export const memo1 = (fn) => fn();
+const memo1Map = new Map(); 
+
+export const memo1 = (fn) => {
+  const fnToString = fn.toString();
+  if (!memo1Map.has(fnToString)) {
+    memo1Map.set(fnToString, fn());
+  }
+  return memo1Map.get(fnToString);
+};
 
 export const memo2 = (fn) => fn();
 
