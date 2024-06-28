@@ -1,14 +1,13 @@
 import { createContext, useContext, useState, useRef, useCallback, useEffect } from "react";
 import { deepEquals } from "../basic/basic";
 
-const memo1Map = new Map(); 
+const memo1Map = new WeakMap();
 
 export const memo1 = (fn) => {
-  const fnToString = fn.toString();
-  if (!memo1Map.has(fnToString)) {
-    memo1Map.set(fnToString, fn());
+  if (!memo1Map.has(fn)) {
+    memo1Map.set(fn, fn());
   }
-  return memo1Map.get(fnToString);
+  return memo1Map.get(fn);
 };
 
 const memo2Map = new Map();
