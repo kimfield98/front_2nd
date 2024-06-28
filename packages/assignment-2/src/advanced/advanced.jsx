@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useRef, useCallback, useEffect } from "react";
 import { deepEquals } from "../basic/basic";
 
 const memo1Map = new Map(); 
@@ -59,42 +59,33 @@ export const TestContext = createContext({
 });
 
 export const TestContextProvider = ({ children }) => {
-  const [value, setValue] = useState(textContextDefaultValue);
+  const contextValueRef = useRef(textContextDefaultValue);
+
+  const setValue = useCallback(
+    (key, newValue) => {
+      contextValueRef.current = { ...contextValueRef.current, [key]: newValue };
+    },
+    [contextValueRef]
+  );
 
   return (
-    <TestContext.Provider value={{ value, setValue }}>
+    <TestContext.Provider value={{ value: contextValueRef.current, setValue }}>
       {children}
     </TestContext.Provider>
-  )
-}
+  );
+};
 
-const useTestContext = () => {
-  return useContext(TestContext);
-}
+const useTestContext = (key) => {
+  const { value, setValue } = useContext(TestContext);
+  const [state, setState] = useState(value[key]);
 
-export const useUser = () => {
-  const { value, setValue } = useTestContext();
+  useEffect(() => {
+    setValue(key, state);
+  }, [state]);
 
-  return [
-    value.user,
-    (user) => setValue({ ...value, user })
-  ];
-}
+  return [state, setState];
+};
 
-export const useCounter = () => {
-  const { value, setValue } = useTestContext();
-
-  return [
-    value.count,
-    (count) => setValue({ ...value, count })
-  ];
-}
-
-export const useTodoItems = () => {
-  const { value, setValue } = useTestContext();
-
-  return [
-    value.todoItems,
-    (todoItems) => setValue({ ...value, todoItems })
-  ];
-}
+export const useUser = () => useTestContext("user");
+export const useCounter = () => useTestContext("count");
+export const useTodoItems = () => useTestContext("todoItems");
