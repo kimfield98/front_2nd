@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useRef, useCallback, useEffect } from "react";
+import { createContext, useContext, useState, useRef, useEffect } from "react";
 import { deepEquals } from "../basic/basic";
 
 const memo1Map = new WeakMap();
@@ -57,12 +57,10 @@ export const TestContext = createContext({
 export const TestContextProvider = ({ children }) => {
   const contextValueRef = useRef(textContextDefaultValue);
 
-  const setValue = useCallback(
-    (key, newValue) => {
+  const setValue = (key, newValue) => {
       contextValueRef.current = { ...contextValueRef.current, [key]: newValue };
-    },
-    [contextValueRef]
-  );
+    }
+  ;
 
   return (
     <TestContext.Provider value={{ value: contextValueRef.current, setValue }}>
