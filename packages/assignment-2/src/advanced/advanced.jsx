@@ -10,28 +10,25 @@ export const memo1 = (fn) => {
   return memo1Map.get(fn);
 };
 
-const memo2Map = new Map();
-const memo2DependenciesMap = new Map();
+const memo2Map = new WeakMap();
+const memo2DependenciesMap = new WeakMap();
 
 const getSortedArray = (array) => {
   return array.slice().sort();
 };
 
 export const memo2 = (fn, dependencies = []) => {
-  const fnToString = fn.toString();
   const dependenciesToString = JSON.stringify(getSortedArray(dependencies));
 
-  if (!memo2Map.has(fnToString)) {
-    memo2Map.set(fnToString, fn());
-    memo2DependenciesMap.set(fnToString, dependenciesToString);
+  if (!memo2Map.has(fn)) {
+    memo2Map.set(fn, fn());
+    memo2DependenciesMap.set(fn, dependenciesToString);
+  } else if (memo2DependenciesMap.get(fn) !== dependenciesToString) {
+    memo2Map.set(fn, fn());
+    memo2DependenciesMap.set(fn, dependenciesToString);
   }
 
-  if (memo2DependenciesMap.get(fnToString) !== dependenciesToString) {
-    memo2Map.set(fnToString, fn());
-    memo2DependenciesMap.set(fnToString, dependenciesToString);
-  }
-
-  return memo2Map.get(fnToString);
+  return memo2Map.get(fn);
 };
 
 export const useCustomState = (initValue) => {
