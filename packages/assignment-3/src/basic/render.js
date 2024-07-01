@@ -1,9 +1,23 @@
 export function jsx(type, props, ...children) {
-  return {}
+  return {type, props, children: children.flat()}
 }
 
 export function createElement(node) {
   // jsx를 dom으로 변환
+  if (typeof node === 'string') {
+    return document.createTextNode(node);
+  }
+  // console.log(node);
+  const $el = document.createElement(node.type);
+  node.children.forEach(child => {
+    $el.appendChild(createElement(child));
+  });
+
+  node.props && Object.keys(node.props).forEach(key => {
+    $el.setAttribute(key, node.props[key]);
+  });
+
+  return $el;
 }
 
 function updateAttributes(target, newProps, oldProps) {
@@ -24,10 +38,18 @@ export function render(parent, newNode, oldNode, index = 0) {
   // 1. 만약 newNode가 없고 oldNode만 있다면
   //   parent에서 oldNode를 제거
   //   종료
+  if (!newNode && oldNode) {
+    parent.removeChild(oldNode);
+    return;
+  }
 
   // 2. 만약 newNode가 있고 oldNode가 없다면
   //   newNode를 생성하여 parent에 추가
   //   종료
+  if (newNode && !oldNode) {
+    parent.appendChild(createElement(newNode));
+    return;
+  }
 
   // 3. 만약 newNode와 oldNode 둘 다 문자열이고 서로 다르다면
   //   oldNode를 newNode로 교체
