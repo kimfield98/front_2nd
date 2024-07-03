@@ -21,17 +21,33 @@ export function createElement(node) {
 }
 
 function updateAttributes(target, newProps, oldProps) {
+  newProps = newProps || {};
+  oldProps = oldProps || {};
   // newProps들을 반복하여 각 속성과 값을 확인
   //   만약 oldProps에 같은 속성이 있고 값이 동일하다면
   //     다음 속성으로 넘어감 (변경 불필요)
   //   만약 위 조건에 해당하지 않는다면 (속성값이 다르거나 구속성에 없음)
   //     target에 해당 속성을 새 값으로 설정
+  Object.keys(newProps).forEach(key => {
+    if (oldProps[key] === newProps[key]) {
+      return;
+    }
+
+    target.setAttribute(key, newProps[key]);
+  });
 
   // oldProps을 반복하여 각 속성 확인
   //   만약 newProps들에 해당 속성이 존재한다면
   //     다음 속성으로 넘어감 (속성 유지 필요)
   //   만약 newProps들에 해당 속성이 존재하지 않는다면
   //     target에서 해당 속성을 제거
+  Object.keys(oldProps).forEach(key => {
+    if (newProps[key]) {
+      return;
+    }
+
+    target.removeAttribute(key);
+  });
 }
 
 export function render(parent, newNode, oldNode, index = 0) {
