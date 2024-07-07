@@ -1,10 +1,46 @@
+/**
+ * 요구사항
+ * 상품
+  - 상품1 - 10,000원
+  - 상품2 - 20,000원
+  - 상품3 - 30,000원
+* 상품 관리
+  - 상품을 장바구니에 추가할 수 있어야 한다.
+  - 장바구니에서 상품을 제거할 수 있어야 한다.
+  - 각 상품의 수량을 변경할 수 있어야 한다.
+* 가격 계산
+  - 장바구니 내 모든 상품의 총액을 계산해야 한다.
+  - 개별 상품의 가격과 수량에 따른 소계를 표시해야 한다.
+  - 상품1 > 10개 이상 구매 시 10% 할인
+  - 상품2 > 10개 이상 구매 시 15% 할인
+  - 상품3 > 10개 이상 구매 시 20% 할인
+  - 상품 종류와 상관 없이, 30개 이상 구매할 경우 25% 할인
+* 기본 기능
+  - 장바구니에 상품 추가 기능
+  - 장바구니에서 상품 제거 기능
+  - 상품 수량 변경 기능
+  - 장바구니 내역 조회 기능
+  - 총액 계산 기능
+ */
 function main() {
+  /**
+   * 상품 목록
+   * id: 상품 아이디
+   * n: 상품 이름
+   * p: 상품 가격
+   */
   var p = [
     {id: 'p1', n: '상품1', p: 10000 },
     {id: 'p2', n: '상품2', p: 20000 },
     {id: 'p3', n: '상품3', p: 30000 }
   ];
 
+  /**
+   * ct: 장바구니 아이템 목록 cart-items
+   * tt: 장바구니 총액 cart-total
+   * s: 상품 선택 select
+   * ab: 장바구니 추가 버튼 add-to-cart
+   */
   var a = document.getElementById('app');
   var w = document.createElement('div');
   var b = document.createElement('div');
@@ -27,6 +63,9 @@ function main() {
   h.textContent = '장바구니';
   ab.textContent = '추가';
 
+  /**
+   * 상품 목록을 select 옵션에 추가
+   */
   for (var j = 0; j < p.length; j++) {
     var o = document.createElement('option');
     o.value = p[j].id;
@@ -34,6 +73,9 @@ function main() {
     s.appendChild(o);
   }
 
+  /**
+   * 화면 그리기
+   */
   b.appendChild(h);
   b.appendChild(ct);
   b.appendChild(tt);
@@ -43,6 +85,10 @@ function main() {
   a.appendChild(w);
 
 
+  /**
+   * updateCart
+   * 카트 아이템 변경 시 총액 업데이트
+   */
   function uc() {
     var t = 0;
     var tq = 0;
@@ -63,6 +109,7 @@ function main() {
 
       tq += quantity;
       tb += itemTotal;
+      // 10개 이상일 때 할인 적용
       if (quantity >= 10) {
         if (item.id === 'p1') disc = 0.1;
         else if (item.id === 'p2') disc = 0.15;
@@ -72,6 +119,7 @@ function main() {
     }
 
     var dr = 0;
+    // 30개 이상일 때 할인 적용
     if (tq >= 30) {
       var bulkDiscount = t * 0.25;
       var individualDiscount = tb - t;
@@ -94,6 +142,9 @@ function main() {
     }
   }
 
+  /**
+   * 추가 버튼 클릭 시 발생하는 이벤트 처리
+   */
   ab.onclick = function() {
     var v = s.value;
     var i;
@@ -140,6 +191,9 @@ function main() {
     }
   };
 
+  /**
+   * 장바구니 아이템 목록에 대한 이벤트 처리
+   */
   ct.onclick = function(event) {
     var target = event.target;
     if (target.classList.contains('quantity-change') || target.classList.contains('remove-item')) {
