@@ -54,19 +54,15 @@ function main() {
   function updateCartTotal() {
     let totalPrice = 0;
     let totalQuantity = 0;
-    const items = cartItems.children;
     let originTotalPrice = 0;
 
-    for (let m = 0; m < items.length; m++) {
-      let item;
-      for (let n = 0; n < productList.length; n++) {
-        if (productList[n].productId === items[m].id) {
-          item = productList[n];
-          break;
-        }
-      }
+    const items = cartItems.children;
+    Array.from(items).forEach((cartItem) => {
+      const item = productList.find(
+        (product) => product.productId === cartItem.id
+      );
       const quantity = parseInt(
-        items[m].querySelector('span').textContent.split('x ')[1]
+        cartItem.querySelector('span').textContent.split('x ')[1]
       );
       const itemTotal = item.productPrice * quantity;
       let discountRate = 0;
@@ -79,7 +75,7 @@ function main() {
         else if (item.productId === 'p3') discountRate = 0.2;
       }
       totalPrice += itemTotal * (1 - discountRate);
-    }
+    });
 
     let totalDiscountRate = 0;
     if (totalQuantity >= 30) {
@@ -106,24 +102,20 @@ function main() {
   }
 
   const select = contentBox.querySelector('#product-select');
-  for (let j = 0; j < productList.length; j++) {
-    const selectOption = document.createElement('option');
-    selectOption.value = productList[j].productId;
-    selectOption.textContent =
-      productList[j].productName + ' - ' + productList[j].productPrice + '원';
-    select.appendChild(selectOption);
-  }
+  productList.forEach((product) => {
+    const option = document.createElement('option');
+    option.value = product.productId;
+    option.textContent =
+      product.productName + ' - ' + product.productPrice + '원';
+    select.appendChild(option);
+  });
 
   const appendItemBtn = contentBox.querySelector('#add-to-cart');
   appendItemBtn.onclick = function () {
     const selectedOption = select.value;
-    let selectedItem;
-    for (let i = 0; i < productList.length; i++) {
-      if (productList[i].productId === selectedOption) {
-        selectedItem = productList[i];
-        break;
-      }
-    }
+    const selectedItem = productList.find(
+      (product) => product.productId === selectedOption
+    );
     if (selectedItem) {
       const selectedElement = document.getElementById(selectedItem.productId);
       if (selectedElement) {
