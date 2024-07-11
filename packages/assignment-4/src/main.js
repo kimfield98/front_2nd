@@ -7,42 +7,46 @@ function main() {
 
   const app = document.getElementById('app');
   const body = document.createElement('div');
-  const contentBox = document.createElement('div');
-  const title = document.createElement('h1');
-  const cartItems = document.createElement('div');
-  const cartTotal = document.createElement('div');
-  const select = document.createElement('select');
-  const appendItemBtn = document.createElement('button');
-
-  cartItems.id = 'cart-items';
-  cartTotal.id = 'cart-total';
-  select.id = 'product-select';
-  appendItemBtn.id = 'add-to-cart';
   body.className = 'bg-gray-100 p-8';
+
+  const contentBox = document.createElement('div');
   contentBox.className =
     'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8';
+
+  const title = document.createElement('h1');
   title.className = 'text-2xl font-bold mb-4';
-  cartTotal.className = 'text-xl font-bold my-4';
-  select.className = 'border rounded p-2 mr-2';
-  appendItemBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
   title.textContent = '장바구니';
-  appendItemBtn.textContent = '추가';
 
-  for (let j = 0; j < productList.length; j++) {
-    const selectOption = document.createElement('option');
-    selectOption.value = productList[j].productId;
-    selectOption.textContent =
-      productList[j].productName + ' - ' + productList[j].productPrice + '원';
-    select.appendChild(selectOption);
-  }
+  const cartItems = document.createElement('div');
+  cartItems.id = 'cart-items';
 
-  contentBox.appendChild(title);
-  contentBox.appendChild(cartItems);
-  contentBox.appendChild(cartTotal);
-  contentBox.appendChild(select);
-  contentBox.appendChild(appendItemBtn);
-  body.appendChild(contentBox);
-  app.appendChild(body);
+  cartItems.onclick = function (event) {
+    const target = event.target;
+    if (
+      target.classList.contains('quantity-change') ||
+      target.classList.contains('remove-item')
+    ) {
+      const productId = target.dataset.productId;
+      const cartItem = document.getElementById(productId);
+      if (target.classList.contains('quantity-change')) {
+        const change = parseInt(target.dataset.change);
+        const quantity =
+          parseInt(cartItem.querySelector('span').textContent.split('x ')[1]) +
+          change;
+        if (quantity > 0) {
+          cartItem.querySelector('span').textContent =
+            cartItem.querySelector('span').textContent.split('x ')[0] +
+            'x ' +
+            quantity;
+        } else {
+          cartItem.remove();
+        }
+      } else if (target.classList.contains('remove-item')) {
+        cartItem.remove();
+      }
+      updateCartTotal();
+    }
+  };
 
   function updateCartTotal() {
     let totalPrice = 0;
@@ -97,6 +101,27 @@ function main() {
       cartTotal.appendChild(totalDiscountResult);
     }
   }
+
+  const cartTotal = document.createElement('div');
+  cartTotal.id = 'cart-total';
+  cartTotal.className = 'text-xl font-bold my-4';
+
+  const select = document.createElement('select');
+  select.id = 'product-select';
+  select.className = 'border rounded p-2 mr-2';
+
+  for (let j = 0; j < productList.length; j++) {
+    const selectOption = document.createElement('option');
+    selectOption.value = productList[j].productId;
+    selectOption.textContent =
+      productList[j].productName + ' - ' + productList[j].productPrice + '원';
+    select.appendChild(selectOption);
+  }
+
+  const appendItemBtn = document.createElement('button');
+  appendItemBtn.id = 'add-to-cart';
+  appendItemBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
+  appendItemBtn.textContent = '추가';
 
   appendItemBtn.onclick = function () {
     const selectedOption = select.value;
@@ -159,33 +184,13 @@ function main() {
     }
   };
 
-  cartItems.onclick = function (event) {
-    const target = event.target;
-    if (
-      target.classList.contains('quantity-change') ||
-      target.classList.contains('remove-item')
-    ) {
-      const productId = target.dataset.productId;
-      const cartItem = document.getElementById(productId);
-      if (target.classList.contains('quantity-change')) {
-        const change = parseInt(target.dataset.change);
-        const quantity =
-          parseInt(cartItem.querySelector('span').textContent.split('x ')[1]) +
-          change;
-        if (quantity > 0) {
-          cartItem.querySelector('span').textContent =
-            cartItem.querySelector('span').textContent.split('x ')[0] +
-            'x ' +
-            quantity;
-        } else {
-          cartItem.remove();
-        }
-      } else if (target.classList.contains('remove-item')) {
-        cartItem.remove();
-      }
-      updateCartTotal();
-    }
-  };
+  app.appendChild(body);
+  body.appendChild(contentBox);
+  contentBox.appendChild(title);
+  contentBox.appendChild(cartItems);
+  contentBox.appendChild(cartTotal);
+  contentBox.appendChild(select);
+  contentBox.appendChild(appendItemBtn);
 }
 
 main();
