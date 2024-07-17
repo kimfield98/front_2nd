@@ -12,6 +12,7 @@ export const useCart = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
 
+  // 장바구니 아이템 관련
   const addToCart = (product: Product) => {
     setCart((prevCart) => addItemToCart(prevCart, product));
   };
@@ -26,13 +27,18 @@ export const useCart = () => {
     );
   };
 
+  // 쿠폰 관련
   const applyCoupon = (coupon: Coupon) => {
     setSelectedCoupon(coupon);
   };
 
+  // 총 금액 관련
   const calculateTotal = () => {
     return calculateCartTotal(cart, selectedCoupon);
   };
+
+  const { totalBeforeDiscount, totalAfterDiscount, totalDiscount } =
+    calculateTotal();
 
   return {
     cart,
@@ -42,5 +48,8 @@ export const useCart = () => {
     applyCoupon,
     calculateTotal,
     selectedCoupon,
+    totalBeforeDiscount,
+    totalAfterDiscount,
+    totalDiscount,
   };
 };

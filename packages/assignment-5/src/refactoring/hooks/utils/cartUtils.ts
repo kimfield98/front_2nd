@@ -1,8 +1,15 @@
 import { CartItem, Coupon, Product } from '../../../types';
 
+// 할인 계산 관련
 export const calculateItemTotal = (item: CartItem): number => {
   const discountRate = getMaxApplicableDiscount(item);
   return item.product.price * item.quantity * (1 - discountRate);
+};
+
+export const getMaxDiscount = (
+  discounts: { quantity: number; rate: number }[]
+) => {
+  return discounts.reduce((max, discount) => Math.max(max, discount.rate), 0);
 };
 
 export const getMaxApplicableDiscount = (item: CartItem): number => {
@@ -10,6 +17,18 @@ export const getMaxApplicableDiscount = (item: CartItem): number => {
     .filter((discount) => item.quantity >= discount.quantity)
     .reduce((max, discount) => Math.max(max, discount.rate), 0);
   return applicableDiscount;
+};
+
+export const getAppliedDiscount = (item: CartItem) => {
+  const { discounts } = item.product;
+  const { quantity } = item;
+  let appliedDiscount = 0;
+  for (const discount of discounts) {
+    if (quantity >= discount.quantity) {
+      appliedDiscount = Math.max(appliedDiscount, discount.rate);
+    }
+  }
+  return appliedDiscount;
 };
 
 export const calculateCartTotal = (
@@ -44,6 +63,7 @@ export const calculateCartTotal = (
   };
 };
 
+// 장바구니 아이템 관련
 export const addItemToCart = (
   cart: CartItem[],
   product: Product
@@ -76,6 +96,7 @@ export const updateCartItemQuantity = (
     .filter((item) => item.quantity > 0);
 };
 
+// 제품 리스트 관련
 export const updateProductInList = (
   products: Product[],
   updatedProduct: Product
@@ -92,9 +113,16 @@ export const addProductToList = (
   return [...products, newProduct];
 };
 
+// 쿠폰 관련
 export const addCouponToList = (
   coupons: Coupon[],
   newCoupon: Coupon
 ): Coupon[] => {
   return [...coupons, newCoupon];
+};
+
+// 재고 확인
+export const getRemainingStock = (product: Product, cart: CartItem[]) => {
+  const cartItem = cart.find((item) => item.product.id === product.id);
+  return product.stock - (cartItem?.quantity || 0);
 };
