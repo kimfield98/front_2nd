@@ -1,4 +1,4 @@
-import { CartItem, Coupon } from '../../../types';
+import { CartItem, Coupon, Product } from '../../../types';
 
 export const calculateItemTotal = (item: CartItem): number => {
   const discountRate = getMaxApplicableDiscount(item);
@@ -44,6 +44,24 @@ export const calculateCartTotal = (
   };
 };
 
+export const addItemToCart = (
+  cart: CartItem[],
+  product: Product
+): CartItem[] => {
+  const existingItem = cart.find((item) => item.product.id === product.id);
+  if (existingItem) {
+    return updateCartItemQuantity(cart, product.id, existingItem.quantity + 1);
+  }
+  return [...cart, { product, quantity: 1 }];
+};
+
+export const removeItemFromCart = (
+  cart: CartItem[],
+  productId: string
+): CartItem[] => {
+  return cart.filter((item) => item.product.id !== productId);
+};
+
 export const updateCartItemQuantity = (
   cart: CartItem[],
   productId: string,
@@ -56,4 +74,27 @@ export const updateCartItemQuantity = (
         : item
     )
     .filter((item) => item.quantity > 0);
+};
+
+export const updateProductInList = (
+  products: Product[],
+  updatedProduct: Product
+): Product[] => {
+  return products.map((product) =>
+    product.id === updatedProduct.id ? updatedProduct : product
+  );
+};
+
+export const addProductToList = (
+  products: Product[],
+  newProduct: Product
+): Product[] => {
+  return [...products, newProduct];
+};
+
+export const addCouponToList = (
+  coupons: Coupon[],
+  newCoupon: Coupon
+): Coupon[] => {
+  return [...coupons, newCoupon];
 };
