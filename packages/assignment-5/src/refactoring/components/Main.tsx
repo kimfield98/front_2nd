@@ -15,17 +15,22 @@ const Main: React.FC<MainProps> = ({ isAdmin }) => {
 
   return (
     <main className="container mx-auto mt-6">
-      {isAdmin ? (
-        <AdminPage
-          products={products}
-          coupons={coupons}
-          onProductUpdate={updateProduct}
-          onProductAdd={addProduct}
-          onCouponAdd={addCoupon}
-        />
-      ) : (
-        <CartPage products={products} coupons={coupons} />
-      )}
+      <div className="container mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-6">
+          {isAdmin ? '관리자 페이지' : '장바구니 페이지'}
+        </h1>
+        {isAdmin ? (
+          <AdminPage
+            products={products}
+            coupons={coupons}
+            onProductUpdate={updateProduct}
+            onProductAdd={addProduct}
+            onCouponAdd={addCoupon}
+          />
+        ) : (
+          <CartPage products={products} coupons={coupons} />
+        )}
+      </div>
     </main>
   );
 };

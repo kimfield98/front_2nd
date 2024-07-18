@@ -1,5 +1,5 @@
-import Header from './components/headerComponet.tsx';
-import Main from './components/mainComponent.tsx';
+import Header from './components/Header.tsx';
+import Main from './components/Main.tsx';
 import { useAdminToggle } from './hooks/useApp.ts';
 
 const App = () => {
