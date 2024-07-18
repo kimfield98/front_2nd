@@ -1,14 +1,14 @@
-import { useCouponsData, useProductsData } from '../hooks/useApp';
+import { useCouponsData, useProductsData } from '../hooks';
 import { initialCoupons } from '../mock/initialCoupons';
 import { initialProducts } from '../mock/initialProducts';
-import { AdminPage } from './AdminPage';
-import { CartPage } from './CartPage';
+import CartPage from './CartPage';
+import AdminPage from './AdminPage';
 
 type MainProps = {
   isAdmin: boolean;
 };
 
-const Main: React.FC<MainProps> = ({ isAdmin }) => {
+const Main = ({ isAdmin }: MainProps) => {
   const { products, updateProduct, addProduct } =
     useProductsData(initialProducts);
   const { coupons, addCoupon } = useCouponsData(initialCoupons);

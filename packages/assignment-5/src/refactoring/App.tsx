@@ -1,6 +1,6 @@
 import Header from './components/Header.tsx';
 import Main from './components/Main.tsx';
-import { useAdminToggle } from './hooks/useApp.ts';
+import { useAdminToggle } from './hooks/useAdminToggle.ts';
 
 const App = () => {
   const { isAdmin, toggleAdmin } = useAdminToggle();

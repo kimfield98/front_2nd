@@ -1,16 +1,16 @@
 import { Coupon, Product } from '../../types.ts';
-import { useCart } from '../hooks/useCart.ts';
+import { useCart } from './cart/hooks/useCart.ts';
 import CouponApply from './cart/CouponApply.tsx';
 import OrderSummary from './cart/OrderSummary.tsx';
 import ProductList from './cart/ProductList.tsx';
 import CartList from './cart/CartList.tsx';
 
-interface Props {
+type Props = {
   products: Product[];
   coupons: Coupon[];
-}
+};
 
-export const CartPage = ({ products, coupons }: Props) => {
+const CartPage = ({ products, coupons }: Props) => {
   const {
     cart,
     addToCart,
@@ -46,3 +46,5 @@ export const CartPage = ({ products, coupons }: Props) => {
     </div>
   );
 };
+
+export default CartPage;

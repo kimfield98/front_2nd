@@ -1,17 +1,17 @@
 import { Coupon, Product } from '../../types';
-import { useAdmin } from '../hooks/useAdmin';
+import { useAdmin } from './admin/hooks/useAdmin';
 import ProductForm from './admin/ProductForm';
 import ProductItem from './admin/ProductItem';
 
-interface Props {
+type Props = {
   products: Product[];
   coupons: Coupon[];
   onProductUpdate: (updatedProduct: Product) => void;
   onProductAdd: (newProduct: Product) => void;
   onCouponAdd: (newCoupon: Coupon) => void;
-}
+};
 
-export const AdminPage = ({
+const AdminPage = ({
   products,
   coupons,
   onProductUpdate,
@@ -165,3 +165,5 @@ export const AdminPage = ({
     </div>
   );
 };
+
+export default AdminPage;
