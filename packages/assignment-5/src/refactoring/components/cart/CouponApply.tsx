@@ -4,19 +4,21 @@ import { Coupon } from '../../../types';
 interface CouponApplyProps {
   coupons: Coupon[];
   selectedCoupon: Coupon | null;
+  cartItemsCount: number;
   applyCoupon: (coupon: Coupon) => void;
+  handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 const CouponApply: React.FC<CouponApplyProps> = ({
   coupons,
   selectedCoupon,
-  applyCoupon,
+  handleChange,
 }) => {
   return (
     <div className="mt-6 bg-white p-4 rounded shadow">
       <h2 className="text-2xl font-semibold mb-2">쿠폰 적용</h2>
       <select
-        onChange={(e) => applyCoupon(coupons[parseInt(e.target.value)])}
+        onChange={handleChange}
         className="w-full p-2 border rounded mb-2"
       >
         <option value="">쿠폰 선택</option>

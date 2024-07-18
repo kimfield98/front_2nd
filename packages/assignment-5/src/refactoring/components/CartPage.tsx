@@ -13,10 +13,12 @@ type Props = {
 const CartPage = ({ products, coupons }: Props) => {
   const {
     cart,
+    cartItemsCount,
     addToCart,
     removeFromCart,
     updateQuantity,
     applyCoupon,
+    checkAndApplyCoupon,
     selectedCoupon,
     totalBeforeDiscount,
     totalAfterDiscount,
@@ -36,6 +38,8 @@ const CartPage = ({ products, coupons }: Props) => {
           coupons={coupons}
           selectedCoupon={selectedCoupon}
           applyCoupon={applyCoupon}
+          cartItemsCount={cartItemsCount}
+          handleChange={(e) => checkAndApplyCoupon(e, coupons)}
         />
         <OrderSummary
           totalBeforeDiscount={totalBeforeDiscount}

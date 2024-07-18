@@ -32,6 +32,20 @@ export const useCart = () => {
     setSelectedCoupon(coupon);
   };
 
+  const checkAndApplyCoupon = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    coupons: Coupon[]
+  ) => {
+    const selectedIndex = parseInt(e.target.value);
+    if (cart.length === 0) {
+      alert('장바구니에 상품이 있어야 쿠폰을 적용할 수 있습니다.');
+      return;
+    }
+    if (!isNaN(selectedIndex) && selectedIndex >= 0) {
+      applyCoupon(coupons[selectedIndex]);
+    }
+  };
+
   // 총 금액 관련
   const calculateTotal = () => {
     return calculateCartTotal(cart, selectedCoupon);
@@ -40,13 +54,17 @@ export const useCart = () => {
   const { totalBeforeDiscount, totalAfterDiscount, totalDiscount } =
     calculateTotal();
 
+  const cartItemsCount = cart.length;
+
   return {
     cart,
+    cartItemsCount,
     addToCart,
     removeFromCart,
     updateQuantity,
     applyCoupon,
     calculateTotal,
+    checkAndApplyCoupon,
     selectedCoupon,
     totalBeforeDiscount,
     totalAfterDiscount,
