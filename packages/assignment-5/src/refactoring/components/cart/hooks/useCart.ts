@@ -8,6 +8,8 @@ import {
   updateCartItemQuantity,
 } from '../../../hooks/utils/cartUtils';
 
+const COUPON_ALERT_MESSAGE = '장바구니에 상품이 있어야 쿠폰을 적용할 수 있습니다.';
+
 export const useCart = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
@@ -38,7 +40,7 @@ export const useCart = () => {
   ) => {
     const selectedIndex = parseInt(e.target.value);
     if (cart.length === 0) {
-      alert('장바구니에 상품이 있어야 쿠폰을 적용할 수 있습니다.');
+      alert(COUPON_ALERT_MESSAGE);
       return;
     }
     if (!isNaN(selectedIndex) && selectedIndex >= 0) {

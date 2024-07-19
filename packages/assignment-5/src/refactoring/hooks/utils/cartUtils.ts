@@ -1,5 +1,7 @@
 import { CartItem, Coupon, Product } from '../../../types';
 
+const DISCOUNT_MULTIPLIER = 100;
+
 // 할인 계산 관련
 export const calculateItemTotal = (item: CartItem): number => {
   const discountRate = getMaxApplicableDiscount(item);
@@ -50,7 +52,7 @@ export const calculateCartTotal = (
     ? selectedCoupon.discountType === 'amount'
       ? selectedCoupon.discountValue
       : (totalBeforeDiscount - totalDiscount) *
-        (selectedCoupon.discountValue / 100)
+        (selectedCoupon.discountValue / DISCOUNT_MULTIPLIER)
     : 0;
 
   const totalAfterDiscount =
