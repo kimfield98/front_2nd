@@ -27,7 +27,7 @@ jobs:
         run: |
           pnpm install
           pnpm -F assignment-5 test:basic
-  advacned:
+  advanced:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
