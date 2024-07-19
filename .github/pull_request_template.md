@@ -1,3 +1,55 @@
+### basic 과제 체크포인트
+
+- 가독성
+    - [ ] **변수와 함수의 이름이 용도와 기능을 명확히 나타내는가?**
+        - 예시: toggleAdmin, isAdmin, useAdminToggle, addToCart, removeFromCart, updateQuantity, applyCoupon, calculateTotal, calculateItemTotal, getMaxDiscount, addItemToCart
+    - [ ] **중복되는 로직을 별도의 함수로 추출했는가?**
+        - 예시: useAdminToggle 훅이 toggleAdmin 기능을 별도로 관리
+        - 예시: useCart 훅과 cartUtils에서 로직을 추출하여 사용 (addItemToCart, calculateCartTotal, removeItemFromCart, updateCartItemQuantity)
+        - 예시: 할인 계산 관련 함수 (getMaxApplicableDiscount, getAppliedDiscount)
+    - [ ] **중첩된 if 문을 피하고 조건문을 단순화했는가?**
+        - 예시: 조건부 렌더링 `isAdmin ? <AdminPage /> : <CartPage />`
+        - 예시: checkAndApplyCoupon 함수 내의 조건문 단순화
+        - 예시: addItemToCart 함수 내의 조건문 단순화
+    - [ ] **매직 넘버와 반복되는 문자열을 상수로 정의했는가?**
+    - [ ] **데이터 처리에 reduce, filter, map 등의 고차 함수를 사용했는가?**
+        - 예시: cartUtils 내의 reduce, filter, map 등의 고차 함수 사용
+    - [ ] **일관된 코딩 스타일, 적절한 들여쓰기, 논리적인 함수 배치로 가독성을 향상시켰는가?**
+- 단일 책임 원칙
+    - [ ] **함수/훅이 하나의 명확한 목적만을 가지고 있는가?**
+        - 예시: useAdminToggle 훅은 관리자 모드 토글 기능만을 수행.
+        - 예시: 각 컴포넌트 또한 명확한 목적을 가짐. (CartItemComponent, CartList, CartPage)
+    - [ ] **함수/훅의 이름이 그 목적을 명확하게 나타내는가?**
+        - 예시: useAdminToggle, toggleAdmin, addToCart, removeFromCart, updateQuantity, calculateItemTotal, addItemToCart, removeItemFromCart
+- 순수 함수
+    - [ ]  **동일한 입력에 대해 항상 동일한 출력을 반환하는가?**
+    - [ ]  **외부 상태를 변경하지 않는가?**
+    - [ ]  **입력 데이터를 직접 수정하지 않고 새로운 데이터를 반환하는가?**
+        - 예시: cartUtils 함수들이 새로운 데이터를 반환하는 방식으로 설계됨.
+        - (addItemToCart, updateCartItemQuantity 등은 새로운 배열을 반환)
+- 합성 가능성
+    - [ ]  **함수/훅을 다른 함수/훅과 쉽게 조합할 수 있는가?**
+        - 예시: calculateItemTotal, getMaxDiscount 등은 다른 함수와 쉽게 조합 가능.
+- 관심사 분리
+    - [ ]  **비즈니스 로직과 UI 로직이 적절히 분리되어 있는가?**
+        - useCart 훅은 비즈니스 로직을, 컴포넌트는 UI 로직을 담당
+- DRY (Don't Repeat Yourself) 원칙
+    - [ ]  **이 함수/훅이 중복 코드를 제거하는 데 도움이 되는가?**
+        - 예시: 할인 계산 관련 로직, 장바구니 아이템 관련 로직 등 중복 제거.
+- 테스트 용이성
+    - [ ]  **함수/훅에 대한 단위 테스트를 쉽게 작성할 수 있는가?**
+    (input에 대한 output을 정의하기 수월한가)
+        - 예시: calculateItemTotal, addItemToCart 등 테스트 작성이 용이.
+        - (함수에 대한 단위 테스트를 쉽게 작성할 수 있음.)
+
+### advanced 과제 체크포인트
+
+- [ ] **advanced.test.ts에 있는 시나리오 테스트를 모두 통과한다.**
+- [ ] **3개 이상의 custom hook을 통해서 리팩토링을 진행했고, 해당 hook에 대한 테스트 코드가 작성되었다.**
+    - use
+- [ ] **3개 이상의 순수함수를 통해서 리팩토링을 진행했고, 해당 함수에 대한 테스트 코드가 작성되었다.**
+
+
 ## 고민했던 부분과 새롭게 알게 된 점
 <!-- 과제를 해결하면서 어려웠던 점이나 고민했던 부분, 그리고 새롭게 학습한 내용을 적어주세요. -->
 
@@ -31,3 +83,19 @@
 ### 개선하고 싶은 부분
 - 
 -
+
+## 인사이트  
+
+현재 작성된 코드가 요구사항에 잘 대응할 수 있는지 자체적으로 점검해보세요. **내가 작성한 코드가 좋은 코드인지 판단해볼 수 있습니다.**
+
+1. start:advanced로 실행하면 초기 데이터를 localStorage에서 불러오고, 추가하고, 수정하고, 삭제할 수 있다.
+2. start:api-mock로 실행하면 초기 데이터를 API를 통해서 불러오고, 추가하고, 수정하고, 삭제할 수 있다.
+    - API는 [msw](https://mswjs.io/)로 만든다.
+3. 회원 등급별 할인 기능
+    - 관리자는 회원 등급을 추가할 수 있다.
+    - 회원 등급에 따른 할인율이 존재한다.
+        - 예시) 일반: 3%, 실버: 5%, 골드: 7%, VIP: 10%,
+    - 장바구니 페이지에서 현재 회원 등급을 임의로 선택할 수 있다.
+    - 회원 등급에 따라 총 구매 가격에 할인율이 적용되어야 한다.
+
+이 외에도 다양한 요구사항이 추가될 수 있습니다. 
