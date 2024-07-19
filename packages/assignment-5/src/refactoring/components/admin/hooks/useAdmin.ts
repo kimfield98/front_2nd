@@ -1,6 +1,6 @@
 // useAdminPage.ts
 import { useState } from 'react';
-import { Coupon, Discount, Product } from '../../types';
+import { Coupon, Discount, Product } from '../../../../types';
 
 interface UseAdminProps {
   products: Product[];
