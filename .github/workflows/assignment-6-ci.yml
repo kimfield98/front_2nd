@@ -3,7 +3,10 @@ name: CI Assignment 6
 on:
   pull_request:
     types:
+      - synchronize
       - opened
+      - reopened
+
     paths:
       - 'packages/assignment-6/**'
 
