@@ -37,12 +37,12 @@ jobs:
           pnpm install --frozen-lockfile
 
       - name: TypeScript Compile
-        run: pnpm run tsc
+        run: pnpm run tsc 2>tsc-error.log
         continue-on-error: true
         id: tsc
 
       - name: Build Project
-        run: pnpm run build
+        run: pnpm run build 2>build-error.log
         continue-on-error: true
         id: build
 
@@ -50,6 +50,10 @@ jobs:
         if: steps.tsc.outcome == 'failure' || steps.build.outcome == 'failure'
         run: |
           echo "TypeScript Compile Error or Build Error"
+          echo "## TypeScript Compile Logs"
+          cat tsc-error.log || true
+          echo "## Build Logs"
+          cat build-error.log || true
           exit 1
 
       - name: Post comment on failure
