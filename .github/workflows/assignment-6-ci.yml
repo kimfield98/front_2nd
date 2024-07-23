@@ -37,12 +37,12 @@ jobs:
           pnpm install --frozen-lockfile
 
       - name: TypeScript Compile
-        run: pnpm run tsc 2>tsc-error.log
+        run: pnpm -F assignment-6 run tsc 2>tsc-error.log
         continue-on-error: true
         id: tsc
 
       - name: Build Project
-        run: pnpm run build 2>build-error.log
+        run: pnpm -F assignment-6 run build 2>build-error.log
         continue-on-error: true
         id: build
 
