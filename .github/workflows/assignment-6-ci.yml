@@ -1,6 +1,9 @@
 name: CI Assignment 6
 
 on:
+  push:
+    branches: 
+      - kimfield98-assignment-6
   pull_request:
     types:
       - synchronize
