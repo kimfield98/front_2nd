@@ -2,7 +2,7 @@ name: CI Assignment 6
 
 on:
   push:
-    branches: 
+    branches:
       - kimfield98-assignment-6
   pull_request:
     types:
@@ -31,8 +31,10 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Fix and install dependencies
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: TypeScript Compile
         run: pnpm run tsc
