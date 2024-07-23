@@ -28,7 +28,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: TypeScript Compile
         run: pnpm run tsc
@@ -55,10 +55,9 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            const { github } = require('@actions/github');
-            const context = github.context;
+            const context = require('@actions/github').context;
             const issue_number = context.payload.pull_request.number;
-            await github.issues.createComment({
+            await require('@actions/github').getOctokit(process.env.GITHUB_TOKEN).issues.createComment({
               ...context.repo,
               issue_number,
               body: 'There was an error in the CI workflow. Please check the logs for more details.'
@@ -82,7 +81,7 @@ jobs:
           version: latest
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run ESLint
         id: eslint
@@ -98,8 +97,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const { github } = require('@actions/github');
-            const context = github.context;
+            const context = require('@actions/github').context;
             const issue_number = context.payload.pull_request.number;
             const report = JSON.parse(fs.readFileSync('eslint-report.json', 'utf8'));
 
@@ -112,7 +110,7 @@ jobs:
               commentBody += '\n';
             });
 
-            await github.issues.createComment({
+            await require('@actions/github').getOctokit(process.env.GITHUB_TOKEN).issues.createComment({
               ...context.repo,
               issue_number,
               body: commentBody
