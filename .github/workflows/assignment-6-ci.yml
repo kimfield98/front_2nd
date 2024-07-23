@@ -1,7 +1,7 @@
 name: CI Assignment 6
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - synchronize
       - opened
@@ -21,16 +21,19 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: TypeScript Compile
-        run: npm run tsc
+        run: pnpm run tsc
         continue-on-error: true
         id: tsc
 
       - name: Build Project
-        run: npm run build
+        run: pnpm run build
         continue-on-error: true
         id: build
 
@@ -49,7 +52,8 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            const { context, github } = require('@actions/github');
+            const github = require('@actions/github');
+            const context = github.context;
             const issue_number = context.payload.pull_request.number;
             await github.issues.createComment({
               ...context.repo,
@@ -77,7 +81,7 @@ jobs:
       - name: Run ESLint
         id: eslint
         run: |
-          npx eslint . --format json --output-file eslint-report.json
+          pnpm eslint . --format json --output-file eslint-report.json
           if [ $? -ne 0 ]; then
             exit 1
           fi
@@ -88,9 +92,10 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const report = JSON.parse(fs.readFileSync('eslint-report.json', 'utf8'));
-            const { context, github } = require('@actions/github');
+            const github = require('@actions/github');
+            const context = github.context;
             const issue_number = context.payload.pull_request.number;
+            const report = JSON.parse(fs.readFileSync('eslint-report.json', 'utf8'));
 
             let commentBody = '## ESLint Report\n';
             report.forEach(result => {
