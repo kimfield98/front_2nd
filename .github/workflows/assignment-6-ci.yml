@@ -76,8 +76,50 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: job2 구현
-        run: echo "job2의 내용을 구현해주세요"
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Fix and install dependencies
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm -F assignment-6 run lint > eslint-report.txt
+        continue-on-error: true
+      
+      - name: Check for ESLint errors
+        id: lint-check
+        run: |
+          if [ -s eslint-report.txt ]
+          then
+            echo "ESLint errors found"
+            echo "lint_failed=true" >> $GITHUB_ENV
+          else
+            echo "No ESLint errors found"
+            echo "lint_failed=false" >> $GITHUB_ENV
+          fi
+        
+      - name: Post ESLint report as comment
+        if: steps.lint-check.outputs.lint_failed == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.TOKEN_FOR_CI }}
+          script: |
+            const fs = require('fs');
+            const eslintReport = fs.readFileSync('eslint-report.txt', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `❌ ESLint found the following issues:\n\`\`\`\n${report}\n\`\`\``
+            })
 
   test:
     runs-on: ubuntu-latest
