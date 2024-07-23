@@ -68,8 +68,11 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Run ESLint
         id: eslint
