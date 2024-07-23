@@ -56,11 +56,53 @@ jobs:
               issue_number,
               body: 'There was an error in the CI workflow. Please check the logs for more details.'
             });
-  lint:
+
+  job2:
     runs-on: ubuntu-latest
     steps:
-      - name: job2 구현
-        run: echo "job2의 내용을 구현해주세요"
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint
+        id: eslint
+        run: |
+          npx eslint . --format json --output-file eslint-report.json
+          if [ $? -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Post ESLint report on failure
+        if: failure()
+        uses: actions/github-script@v3
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('eslint-report.json', 'utf8'));
+            const { context, github } = require('@actions/github');
+            const issue_number = context.payload.pull_request.number;
+
+            let commentBody = '## ESLint Report\n';
+            report.forEach(result => {
+              commentBody += `### ${result.filePath}\n`;
+              result.messages.forEach(msg => {
+                commentBody += `- ${msg.message} (line ${msg.line})\n`;
+              });
+              commentBody += '\n';
+            });
+
+            await github.issues.createComment({
+              ...context.repo,
+              issue_number,
+              body: commentBody
+            });
 
   test:
     runs-on: ubuntu-latest
