@@ -36,12 +36,12 @@ jobs:
         run: pnpm install
 
       - name: TypeScript Compile
-        run: pnpm -F assignment-6 run tsc 2>tsc-error.log
+        run: pnpm -F assignment-6 tsc 2>tsc-error.log
         continue-on-error: true
         id: tsc
 
       - name: Build Project
-        run: pnpm -F assignment-6 run build 2>build-error.log
+        run: pnpm -F assignment-6 build 2>build-error.log
         continue-on-error: true
         id: build
 
@@ -89,7 +89,7 @@ jobs:
         run: pnpm install
 
       - name: Run ESLint
-        run: pnpm -F assignment-6 run lint > lint_output.log 2>&1
+        run: pnpm -F assignment-6 lint > lint_output.log 2>&1
         continue-on-error: true
 
       - name: Post ESLint report as comment
