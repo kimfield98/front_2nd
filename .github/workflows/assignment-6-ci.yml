@@ -87,34 +87,23 @@ jobs:
         run: pnpm install
 
       - name: Run ESLint
-        run: pnpm -F assignment-6 run lint > eslint-report.txt
+        run: pnpm -F assignment-6 run lint > lint_output.log 2>&1
         continue-on-error: true
 
-      - name: Check for ESLint errors
-        id: lint-check
-        run: |
-          if [ -s eslint-report.txt ]
-          then
-            echo "ESLint errors found"
-            echo "lint_failed=true" >> $GITHUB_ENV
-          else
-            echo "No ESLint errors found"
-            echo "lint_failed=false" >> $GITHUB_ENV
-          fi
-
       - name: Post ESLint report as comment
-        if: steps.lint-check.outputs.lint_failed == 'true' && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        if: failure()
+        uses: actions/github-script@v6.4.0
         with:
           github-token: ${{ secrets.TOKEN_FOR_CI }}
           script: |
-            const fs = require('fs');
-            const eslintReport = fs.readFileSync('eslint-report.txt', 'utf8');
+            const fs = require('fs')
+            const report = fs.readFileSync('lint_output.log', 'utf8')
+            const message = `## ESLint Results\n\n${report}`
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `❌ ESLint found the following issues:\n\`\`\`\n${report}\n\`\`\``
+              body: message            
             })
 
   test:
