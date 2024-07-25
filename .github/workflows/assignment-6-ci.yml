@@ -126,7 +126,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create test coverage
+      - name: Run tests and generate coverage
         run: pnpm --filter assignment-6 test:coverage > test-output.log 2>&1
 
       - name: Comment on PR
@@ -151,12 +151,33 @@ jobs:
             });
 
       - name: Report coverage
-        if: always()
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           json-summary-path: packages/assignment-6/coverage/coverage-summary.json
           json-final-path: packages/assignment-6/coverage/coverage-final.json
           github-token: ${{ secrets.TOKEN_FOR_CI }}
+
+      - name: Comment coverage summary
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.TOKEN_FOR_CI }}
+          script: |
+            const fs = require('fs');
+            const coverageSummary = JSON.parse(fs.readFileSync('packages/assignment-6/coverage/coverage-summary.json', 'utf8'));
+            const totalCoverage = coverageSummary.total.lines.pct;
+            const body = `
+              **Test Coverage Summary**
+              \`\`\`
+              Lines: ${totalCoverage}%
+              \`\`\`
+            `;
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
 
   lighthouse:
     runs-on: ubuntu-latest
