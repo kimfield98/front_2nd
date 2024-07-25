@@ -94,7 +94,7 @@ jobs:
           github-token: ${{ secrets.TOKEN_FOR_CI }}
           script: |
             const fs = require('fs')
-            const report = fs.readFileSync('lint_output.log', 'utf8')
+            const report = fs.readFileSync('packages/assignment-6/.eslintrc.cjs', 'utf8')
             const message = `## ESLint Results\n\n${report}`
             github.rest.issues.createComment({
               issue_number: context.issue.number,
