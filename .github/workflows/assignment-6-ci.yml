@@ -9,7 +9,7 @@ on:
 
     paths:
       - 'packages/assignment-6/**'
-      
+
   workflow_dispatch:
 
 jobs:
@@ -118,45 +118,56 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: |
-          cd packages/assignment-6
-          pnpm install
-          pnpm install -D vitest jsdom @vitest/coverage-v8
+        run: pnpm install
 
       - name: Run tests
-        run: |
-          cd packages/assignment-6
-          pnpm run test
+        run: pnpm -F assignment-6 test:coverage > test-output.log 2>&1
+        continue-on-error: true
+        id: test
 
-      - name: Generate coverage report
-        id: coverage
+      - name: Check for test errors
+        if: steps.test.outcome == 'failure'
         run: |
-          cd packages/assignment-6
-          pnpm run coverage
-          LINE=$(jq -r '.total.lines.pct' coverage/coverage-summary.json)
-          BRANCH=$(jq -r '.total.branches.pct' coverage/coverage-summary.json)
-          FUNCTION=$(jq -r '.total.functions.pct' coverage/coverage-summary.json)
-          STATEMENT=$(jq -r '.total.statements.pct' coverage/coverage-summary.json)
-          echo "LINE=${LINE}" >> $GITHUB_ENV
-          echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
-          echo "FUNCTION=${FUNCTION}" >> $GITHUB_ENV
-          echo "STATEMENT=${STATEMENT}" >> $GITHUB_ENV
+          echo "Test Error"
+          echo "## Test Logs"
+          cat test-output.log
+          exit 1
 
-      - name: Comment on PR with coverage results
-        uses: actions/github-script@v6
+      - name: Post comment on test failure
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
         with:
-          github-token: ${{secrets.TOKEN_FOR_CI}}
+          github-token: ${{ secrets.TOKEN_FOR_CI }}
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## 커버리지 결과
-              * 라인 커버리지: ${{ env.LINE }}%
-              * 브랜치 커버리지: ${{ env.BRANCH }}%
-              * 함수 커버리지: ${{ env.FUNCTION }}%
-              * 구문 커버리지: ${{ env.STATEMENT }}%`
+              body: `❌ Tests failed. Please check the test logs for more details.`
             })
+
+      - name: Comment test results on success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.TOKEN_FOR_CI }}
+          script: |
+            const fs = require('fs');
+            const coverageJson = JSON.parse(fs.readFileSync('packages/assignment-6/coverage/coverage-summary.json', 'utf8'));
+            const {lines, statements, functions, branches} = coverageJson.total;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 테스트 성공✅ 
+              \n ### 커버리지 결과 \n
+            
+              • 라인 커버리지: ${lines.pct}%
+              • 브랜치 커버리지: ${branches.pct}%
+              • 함수 커버리지: ${functions.pct}%
+              • 구문 커버리지: ${statements.pct}%
+            `})
 
   lighthouse:
     runs-on: ubuntu-latest
