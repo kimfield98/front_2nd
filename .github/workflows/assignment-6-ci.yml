@@ -87,7 +87,6 @@ jobs:
 
       - name: Run ESLint
         run: pnpm -F assignment-6 lint > lint_output.log 2>&1
-        continue-on-error: true
 
       - name: Post ESLint report as comment
         if: failure()
