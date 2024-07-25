@@ -3,113 +3,114 @@ name: CI Assignment 6
 on:
   pull_request:
     types:
-      - synchronize
       - opened
       - reopened
+      - synchronize
     paths:
-      - 'packages/assignment-6/**'
-
-  workflow_dispatch:
+      - "packages/assignment-6/**"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Check out
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 8
-          run_install: false
 
-      - name: Setup Node.js
+      - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: TypeScript Compile
-        run: pnpm -F assignment-6 tsc 2>tsc-error.log
-        id: tsc
-
-      - name: Build Project
-        run: pnpm -F assignment-6 build > build-error.log 2>&1
-        id: build
-
-      - name: Check for errors
-        if: steps.tsc.outcome == 'failure' || steps.build.outcome == 'failure'
+      - name: tsc & build
         run: |
-          echo "TypeScript Compile Error or Build Error"
-          echo "## TypeScript Compile Logs"
-          cat tsc-error.log || true
-          echo "## Build Logs"
-          cat build-error.log || true
-          exit 1
+          pnpm -F assignment-6 tsc > tsc-output.log 2>&1
+          pnpm -F assignment-6 build > build-output.log 2>&1
 
-      - name: Post comment on failure
-        if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.TOKEN_FOR_CI }}
-          script: |
-            const errors = [];
-            if ('${{ steps.tsc.outcome }}' === 'failure') errors.push('TypeScript Compile');
-            if ('${{ steps.build.outcome }}' === 'failure') errors.push('Build');
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `❌ The following errors occurred:\n${errors.join('\n')}\n\nPlease check the build logs for more details.`
-            })
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 8
-          run_install: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run ESLint
-        run: pnpm -F assignment-6 lint > lint_output.log 2>&1
-
-      - name: Post ESLint report as comment
+      - name: Comment on PR
         if: failure()
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.TOKEN_FOR_CI }}
           script: |
-            const fs = require('fs');
-            const report = fs.readFileSync('lint_output.log', 'utf8');
-            const message = `## ESLint Results\n\n${report}`;
-            github.rest.issues.createComment({
+            const tscLog = fs.readFileSync('tsc-output.log', 'utf8');
+            const buildLog = fs.readFileSync('build-output.log', 'utf8');
+            const body = `
+              **TypeScript Compile Logs**
+              \`\`\`
+              ${tscLog}
+              \`\`\`
+
+              **Build Logs**
+              \`\`\`
+              ${buildLog}
+              \`\`\`
+            `;
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: message
-            })
+              body: body
+            });
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint
+        run: pnpm -F assignment-6 lint > lint-output.log 2>&1
+
+      - name: Comment on PR
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.TOKEN_FOR_CI }}
+          script: |
+            const lintLog = fs.readFileSync('lint-output.log', 'utf8');
+            const body = `
+              **ESLint Logs**
+              \`\`\`
+              ${lintLog}
+              \`\`\`
+            `;
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Check out
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 8
@@ -124,25 +125,30 @@ jobs:
         run: pnpm install
 
       - name: Create test coverage
-        run: pnpm -F assignment-6 test:coverage > test_output.log 2>&1
+        run: pnpm -F assignment-6 test:coverage > test-output.log 2>&1
 
-      - name: Post test coverage report as comment
+      - name: Comment on PR
         if: failure()
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.TOKEN_FOR_CI }}
           script: |
-            const fs = require('fs');
-            const report = fs.readFileSync('test_output.log', 'utf8');
-            const message = `## Test Coverage Results\n\n${report}`;
-            github.rest.issues.createComment({
+            const testLog = fs.readFileSync('test-output.log', 'utf8');
+            const body = `
+              **Test Coverage Logs**
+              \`\`\`
+              ${testLog}
+              \`\`\`
+            `;
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: message
-            })
+              body: body
+            });
 
       - name: Report coverage
+        if: always()
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           json-summary-path: packages/assignment-6/coverage/coverage-summary.json
@@ -152,10 +158,10 @@ jobs:
   lighthouse:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Check out
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 8
@@ -168,70 +174,63 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-
+      
       - name: Build
         run: pnpm -F assignment-6 build
 
-      - name: Run Lighthouse CI
+      - name: Run Lighthouse ci
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         run: |
           pnpm install -g @lhci/cli
-          pnpm --filter assignment-6 lighthouse > lighthouse_output.log 2>&1 || echo "Fail to Run Lighthouse CI"
+          pnpm -F assignment-6 lighthouse > lighthouse-output.log 2>&1 || echo "Fail to Run Lighthouse CI"
 
-      - name: Post Lighthouse CI report as comment
-        if: failure()
+      - name: Comment Lighthouse results
+        if: always()
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.TOKEN_FOR_CI }}
           script: |
             const fs = require('fs');
-            const results = fs.readFileSync('lighthouse_output.log', 'utf8');
-            const message = `## Lighthouse CI Results\n\n${results}`;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: message
-            })
-
-  assign_reviewer:
-    runs-on: ubuntu-latest
-    if: github.event.action == 'opened'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Add collaborators
-        env:
-          GH_TOKEN: ${{ secrets.TOKEN_FOR_CI }}
-        run: |
-          gh api repos/${{ github.repository }}/collaborators/tsihnavy99 -X PUT -f permission=push
-          gh api repos/${{ github.repository }}/collaborators/steve-shim -X PUT -f permission=push
-
-      - name: Pick a teammate randomly & select them as reviewer & request review
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.TOKEN_FOR_CI }}
-          script: |
-            const myTeammates = [
-              {name:'형예은', github: 'tsihnavy99'},
-              {name:'심승혁', github: 'steve-shim'}
-            ];
-            const randomIndex = Math.round(Math.random());
-            const reviewerName = myTeammates[randomIndex].name;
-            const reviewerGithub = myTeammates[randomIndex].github;
-            const comment = `
-            @${reviewerGithub} ${reviewerName}님, 리뷰를 부탁드립니다.
+            const results = fs.readFileSync('lighthouse-output.log', 'utf8');
+            const body = `
+              **Lighthouse CI Results**
+              \`\`\`
+              ${results}
+              \`\`\`
             `;
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment
+              body: body
             });
-            await github.rest.pulls.requestReviewers({
-              pull_number: context.issue.number,
+
+  assign_reviewer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign reviewer
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.TOKEN_FOR_CI }}
+          script: |
+            const reviewers = ['steve-shim', 'tsihnavy99', 'chhw130'];
+            const randomReviewer = reviewers[Math.floor(Math.random() * reviewers.length)];
+            await github.rest.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              reviewers: [reviewerGithub]
+              issue_number: context.issue.number,
+              assignees: [context.payload.pull_request.user.login]
+            });
+            await github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              reviewers: [randomReviewer]
+            });
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `@${randomReviewer}님, 리뷰를 부탁드립니다.`
             });
