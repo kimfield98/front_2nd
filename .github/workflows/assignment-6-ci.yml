@@ -133,48 +133,68 @@ jobs:
           cat packages/assignment-6/coverage/coverage-summary.txt
           exit 1
 
-      - name: Post comment on test failure
-        if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.TOKEN_FOR_CI }}
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `❌ Tests failed. Please check the test logs for more details.`
-            })
-
-      - name: Comment test results on success
+          - name: Post comment on test failure
+          if: failure() && github.event_name == 'pull_request'
+          uses: actions/github-script@v7
+          with:
+            github-token: ${{ secrets.TOKEN_FOR_CI }}
+            script: |
+              const fs = require('fs');
+              let errorMessage = 'Tests failed. ';
+              
+              if (fs.existsSync('test-output.log')) {
+                errorMessage += 'Test output:\n```\n' + fs.readFileSync('test-output.log', 'utf8') + '\n```';
+              } else {
+                errorMessage += 'No test output available.';
+              }
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `❌ ${errorMessage}`
+              });
+  
+      - name: Comment test results and coverage on success
         if: success()
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.TOKEN_FOR_CI }}
           script: |
             const fs = require('fs');
-            const coverageSummary = fs.readFileSync('packages/assignment-6/coverage/coverage-summary.json', 'utf8');
-            const coverage = JSON.parse(coverageSummary);
-
-            const formatPercentage = (percentage) => (percentage * 100).toFixed(2) + '%';
-
-            const coverageComment = `## 테스트 결과 ✅ 
-            \n ### 커버리지 요약 \n
-
-            • 라인 커버리지: ${formatPercentage(coverage.total.lines.pct)}
-            • 함수 커버리지: ${formatPercentage(coverage.total.functions.pct)}
-            • 구문 커버리지: ${formatPercentage(coverage.total.statements.pct)}
-            • 브랜치 커버리지: ${formatPercentage(coverage.total.branches.pct)}
-
-            자세한 내용은 커버리지 리포트를 확인해주세요.`;
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: coverageComment
-            });
-
+            const coveragePath = 'packages/assignment-6/coverage/coverage-summary.json';
+            
+            if (fs.existsSync(coveragePath)) {
+              const coverageSummary = fs.readFileSync(coveragePath, 'utf8');
+              const coverage = JSON.parse(coverageSummary);
+              
+              const formatPercentage = (percentage) => (percentage * 100).toFixed(2) + '%';
+              
+              const coverageComment = `## 테스트 결과 ✅ 
+              \n ### 커버리지 요약 \n
+              
+              • 라인 커버리지: ${formatPercentage(coverage.total.lines.pct)}
+              • 함수 커버리지: ${formatPercentage(coverage.total.functions.pct)}
+              • 구문 커버리지: ${formatPercentage(coverage.total.statements.pct)}
+              • 브랜치 커버리지: ${formatPercentage(coverage.total.branches.pct)}
+              
+              자세한 내용은 커버리지 리포트를 확인해주세요.`;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: coverageComment
+              });
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `✅ Tests passed, but no coverage information available.`
+              });
+            }
+              
   lighthouse:
     runs-on: ubuntu-latest
     steps:
