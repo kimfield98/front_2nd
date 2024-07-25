@@ -157,20 +157,23 @@ jobs:
           json-final-path: packages/assignment-6/coverage/coverage-final.json
           github-token: ${{ secrets.TOKEN_FOR_CI }}
 
-      - name: Comment coverage summary
-        if: always()
+      - name: Comment on PR
+        if: success()
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.TOKEN_FOR_CI }}
           script: |
             const fs = require('fs');
             const coverageSummary = JSON.parse(fs.readFileSync('packages/assignment-6/coverage/coverage-summary.json', 'utf8'));
-            const totalCoverage = coverageSummary.total.lines.pct;
             const body = `
-              **Test Coverage Summary**
-              \`\`\`
-              Lines: ${totalCoverage}%
-              \`\`\`
+              ### 테스트 성공 ✅
+
+              **커버리지 결과**
+
+              - 라인 커버리지: ${coverageSummary.total.lines.pct}%
+              - 브랜치 커버리지: ${coverageSummary.total.branches.pct}%
+              - 함수 커버리지: ${coverageSummary.total.functions.pct}%
+              - 구문 커버리지: ${coverageSummary.total.statements.pct}%
             `;
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
