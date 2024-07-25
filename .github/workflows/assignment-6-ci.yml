@@ -1,9 +1,6 @@
 name: CI Assignment 6
 
 on:
-  push:
-    branches:
-      - kimfield98-assignment-6
   pull_request:
     types:
       - synchronize
@@ -41,7 +38,7 @@ jobs:
         id: tsc
 
       - name: Build Project
-        run: pnpm -F assignment-6 build 2>build-error.log
+        run: pnpm -F assignment-6 build > error.log 2>&1
         continue-on-error: true
         id: build
 
@@ -111,8 +108,53 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: job3 구현
-        run: echo "job3의 내용을 구현해주세요"
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run tests
+        run: pnpm -F assignment-6 test -- --coverage
+
+      - name: Post coverage comment
+        if: always()
+        uses: actions/github-script@v6.4.0
+        with:
+          github-token: ${{ secrets.TOKEN_FOR_CI }}
+          script: |
+            const fs = require('fs')
+            const path = require('path')
+
+            const coveragePath = path.join(process.cwd(), 'packages/assignment-6/coverage', 'coverage-summary.json')
+            let message = '## 테스트 결과\n\n'
+
+            try {
+              const coverageData = JSON.parse(fs.readFileSync(coveragePath, 'utf8'))
+              const totalCoverage = coverageData.total
+              
+              message += '### 커버리지 결과\n'
+              message += `- 라인 커버리지: ${totalCoverage.lines.pct}%\n`
+              message += `- 구문 커버리지: ${totalCoverage.statements.pct}%\n`
+              message += `- 함수 커버리지: ${totalCoverage.functions.pct}%\n`
+              message += `- 브랜치 커버리지: ${totalCoverage.branches.pct}%\n`
+            } catch (error) {
+              message += '커버리지 데이터를 읽는 데 실패했습니다.\n'
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            })
 
   lighthouse:
     runs-on: ubuntu-latest
