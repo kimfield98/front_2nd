@@ -92,6 +92,23 @@ const events: Event[] = [
   },
 ];
 
+const holidays = {
+  '2024-01-01': '신정',
+  '2024-02-09': '설날',
+  '2024-02-10': '설날',
+  '2024-02-11': '설날',
+  '2024-03-01': '삼일절',
+  '2024-05-05': '어린이날',
+  '2024-06-06': '현충일',
+  '2024-08-15': '광복절',
+  '2024-09-16': '추석',
+  '2024-09-17': '추석',
+  '2024-09-18': '추석',
+  '2024-10-03': '개천절',
+  '2024-10-09': '한글날',
+  '2024-12-25': '크리스마스',
+};
+
 export const mockApiHandlers = [
   http.get('/api/events', () => {
     return HttpResponse.json(events);
@@ -125,5 +142,28 @@ export const mockApiHandlers = [
     } else {
       return HttpResponse.json({ message: 'Event not found' }, { status: 404 });
     }
+  }),
+
+  http.get('/api/holidays', ({ request }) => {
+    const url = new URL(request.url);
+    const searchParams = url.searchParams;
+    const year = searchParams.get('year');
+    const month = searchParams.get('month');
+    if (!year || !month) {
+      return HttpResponse.json(
+        { message: 'year or month are required' },
+        { status: 400 }
+      );
+    }
+    const filteredHolidays = Object.entries(holidays).reduce(
+      (acc, [date, name]) => {
+        if (date.startsWith(`${year}-${month.padStart(2, '0')}`)) {
+          acc[date] = name;
+        }
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+    return HttpResponse.json(filteredHolidays);
   }),
 ];
