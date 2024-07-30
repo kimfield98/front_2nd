@@ -1,17 +1,5 @@
 import { http, HttpResponse } from 'msw';
-
-interface Event {
-  id: number;
-  title: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  description: string;
-  location: string;
-  category: string;
-  repeat: { type: string; interval: number };
-  notificationTime: number;
-}
+import { Event } from './App';
 
 const events: Event[] = [
   {
