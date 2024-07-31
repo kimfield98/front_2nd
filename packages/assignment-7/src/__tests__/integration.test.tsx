@@ -102,6 +102,7 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
 
       // 일정 추가 버튼 클릭
       await user.click(addButton);
+      screen.logTestingPlaygroundURL();
 
       // 일정이 렌더링되었는지 확인
       const view = screen.getByTestId('event-list');
