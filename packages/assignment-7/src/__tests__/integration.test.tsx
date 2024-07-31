@@ -24,7 +24,6 @@ afterEach(() => {
   server.resetHandlers();
   vi.clearAllMocks();
   resetMockData();
-  console.log('reset');
 });
 
 // 테스트 종료 후에 목 서버 종료
@@ -45,6 +44,7 @@ const setup = (component: ReactNode) => {
 describe('일정 관리 애플리케이션 통합 테스트', () => {
   describe('일정 CRUD 및 기본 기능', () => {
     test('일정이 정상적으로 렌더링되는지 확인한다', async () => {
+      vi.setSystemTime(new Date('2024-07-01T00:00:00Z'));
       setup(<App />);
 
       const view = screen.getByTestId('event-list');
@@ -77,6 +77,7 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
     });
 
     test('새로운 일정을 생성하고 모든 필드가 정확히 저장되는지 확인한다', async () => {
+      vi.setSystemTime(new Date('2024-07-01T00:00:00Z'));
       const { user } = setup(<App />);
 
       // 입력 필드 선택
