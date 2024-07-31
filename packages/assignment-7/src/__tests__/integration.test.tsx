@@ -44,7 +44,7 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
   describe('일정 CRUD 및 기본 기능', () => {
     test('일정이 정상적으로 렌더링되는지 확인한다', async () => {
       setup(<App />);
-      
+
       const view = screen.getByTestId('event-list');
 
       const events = await within(view).findAllByText((content) => {
@@ -93,27 +93,20 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
       // 입력 값 설정
       await user.type(titleInput, '초원');
       await user.type(dateInput, '2024-07-31');
-      await user.type(startTimeInput, '13:00');
-      await user.type(endTimeInput, '14:00');
-      await user.type(descriptionInput, '일정');
+      await user.type(startTimeInput, '22:00');
+      await user.type(endTimeInput, '23:00');
+      await user.type(descriptionInput, '퇴근');
       await user.type(locationInput, '집');
-      await user.selectOptions(categorySelect, '업무');
+      await user.selectOptions(categorySelect, '개인');
       await user.selectOptions(alertSelect, '10분 전');
 
       // 일정 추가 버튼 클릭
       await user.click(addButton);
 
       // 일정이 렌더링되었는지 확인
-      const newEvent = screen.getAllByText('초원')[0].closest('div'); // 새로 추가된 일정의 부모 div 선택
-
-      // 새로 추가된 일정의 부모 요소를 기준으로 각 필드를 확인합니다.
-      expect(newEvent).toHaveTextContent('초원');
-      // expect(newEvent).toHaveTextContent('2024-07-31');
-      // expect(newEvent).toHaveTextContent('13:00 - 14:00');
-      // expect(newEvent).toHaveTextContent('일정');
-      // expect(newEvent).toHaveTextContent('집');
-      // expect(newEvent).toHaveTextContent('업무');
-      // expect(newEvent).toHaveTextContent('알림: 10분 전');
+      const view = screen.getByTestId('event-list');
+      const newEvent = await within(view).findByText('초원');
+      expect(newEvent).toBeInTheDocument();
     });
   });
 
