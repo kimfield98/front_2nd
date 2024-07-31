@@ -10,7 +10,7 @@ import {
 } from 'vitest';
 import { mockApiHandlers } from '../mockApiHandlers';
 import { ReactNode } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 
@@ -42,6 +42,15 @@ const setup = (component: ReactNode) => {
 
 describe('일정 관리 애플리케이션 통합 테스트', () => {
   describe('일정 CRUD 및 기본 기능', () => {
+    test('일정이 정상적으로 렌더링되는지 확인한다', async () => {
+      setup(<App />);
+      const view = screen.getByTestId('event-list');
+      const event = await within(view).findByText((content) => {
+        return content.includes('팀 회의');
+      });
+      expect(event).toBeInTheDocument();
+    });
+
     test('새로운 일정을 생성하고 모든 필드가 정확히 저장되는지 확인한다', async () => {
       const { user } = setup(<App />);
 
