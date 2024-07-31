@@ -44,11 +44,34 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
   describe('일정 CRUD 및 기본 기능', () => {
     test('일정이 정상적으로 렌더링되는지 확인한다', async () => {
       setup(<App />);
+      
       const view = screen.getByTestId('event-list');
-      const event = await within(view).findByText((content) => {
-        return content.includes('팀 회의');
+
+      const events = await within(view).findAllByText((content) => {
+        return [
+          '팀 회의',
+          '점심 약속',
+          '프로젝트 마감',
+          '생일 파티',
+          '운동',
+          '알림 테스트',
+        ].some((eventText) => content.includes(eventText));
       });
-      expect(event).toBeInTheDocument();
+
+      const expectedEvents = [
+        '팀 회의',
+        '점심 약속',
+        '프로젝트 마감',
+        '생일 파티',
+        '운동',
+        '알림 테스트',
+      ];
+      expectedEvents.forEach((expectedEvent) => {
+        const event = events.find(
+          (el) => el.textContent && el.textContent.includes(expectedEvent)
+        );
+        expect(event).toBeInTheDocument();
+      });
     });
 
     test('새로운 일정을 생성하고 모든 필드가 정확히 저장되는지 확인한다', async () => {
