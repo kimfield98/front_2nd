@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { Event } from './App';
 
-const events: Event[] = [
+const initialEvents: Event[] = [
   {
     id: 1,
     title: '팀 회의',
@@ -107,6 +107,12 @@ const holidays = {
   '2024-10-03': '개천절',
   '2024-10-09': '한글날',
   '2024-12-25': '크리스마스',
+};
+
+let events = [...initialEvents];
+
+export const resetMockData = () => {
+  events = [...initialEvents];
 };
 
 export const mockApiHandlers = [
