@@ -114,6 +114,55 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
       const newEvent = await within(view).findByText('초원');
       expect(newEvent).toBeInTheDocument();
     });
+
+    test('기존 일정의 세부 정보를 수정하고 변경사항이 정확히 반영되는지 확인한다', async () => {
+      vi.setSystemTime(new Date('2024-08-01T00:00:00Z'));
+
+      const { user } = setup(<App />);
+
+      const editButton = await screen.findAllByRole('button', {
+        name: 'Edit event',
+      });
+      await user.click(editButton[0]);
+
+      // 입력 필드 선택
+      const titleInput = screen.getByRole('textbox', { name: /제목/i });
+
+      // 입력 값 수정
+      await user.clear(titleInput);
+      await user.type(titleInput, '초원 수정');
+
+      // 저장 버튼 클릭
+      const saveButton = screen.getByTestId('event-submit-button');
+      await user.click(saveButton);
+
+      // 일정이 렌더링되었는지 확인
+      const view = screen.getByTestId('event-list');
+      const updatedEvent = await within(view).findByText('초원 수정');
+      expect(updatedEvent).toBeInTheDocument();
+    });
+
+    test('일정을 삭제하고 더 이상 조회되지 않는지 확인한다', async () => {
+      vi.setSystemTime(new Date('2024-08-01T00:00:00Z'));
+
+      const { user } = setup(<App />);
+
+      // 삭제할 일정의 제목을 '팀 회의'로 설정합니다.
+      const eventTitleToDelete = '팀 회의';
+      const deleteButton = await screen.findAllByRole('button', {
+        name: 'Delete event',
+      });
+      await user.click(deleteButton[0]);
+      // screen.logTestingPlaygroundURL();
+
+      // 일정이 더 이상 렌더링되지 않는지 확인합니다.
+      const view = screen.getByTestId('event-list');
+      await waitFor(() => {
+        expect(
+          within(view).queryByText(eventTitleToDelete)
+        ).not.toBeInTheDocument();
+      });
+    });
   });
 });
 
