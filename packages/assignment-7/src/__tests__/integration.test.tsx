@@ -226,9 +226,17 @@ describe('일정 뷰 및 필터링', () => {
   });
 });
 
-// describe('알림 기능', () => {
-//   test.fails('일정 알림을 설정하고 지정된 시간에 알림이 발생하는지 확인한다');
-// });
+describe('알림 기능', () => {
+  test('일정 알림을 설정하고 지정된 시간에 알림이 발생하는지 확인한다', async () => {
+    vi.setSystemTime(new Date('2024-08-20T09:59:01'));
+
+    setup(<App />);
+
+    expect(
+      await screen.findByText('1분 후 팀 회의 일정이 시작됩니다.')
+    ).toBeInTheDocument();
+  });
+});
 
 // describe('검색 기능', () => {
 //   test.fails('제목으로 일정을 검색하고 정확한 결과가 반환되는지 확인한다');
