@@ -197,7 +197,19 @@ describe('일정 뷰 및 필터링', () => {
     });
   });
 
-  test('월별 뷰에 일정이 없으면, 일정이 표시되지 않아야 한다.');
+  test('월별 뷰에 일정이 없으면, 일정이 표시되지 않아야 한다.', async () => {
+    vi.setSystemTime(new Date('2024-09-01T00:00:00Z'));
+
+    const { user } = setup(<App />);
+    const viewSelector = screen.getByLabelText('view');
+    await user.selectOptions(viewSelector, 'month');
+
+    const view = screen.getByTestId('event-list');
+    await waitFor(() => {
+      expect(within(view).findAllByText('검색 결과가 없습니다.'));
+    });
+  });
+
   test('월별 뷰에 일정이 정확히 표시되는지 확인한다');
 });
 
