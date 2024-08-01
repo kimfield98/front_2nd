@@ -166,12 +166,25 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
   });
 });
 
-// describe('일정 뷰 및 필터링', () => {
-//   test.fails('주별 뷰에 일정이 없으면, 일정이 표시되지 않아야 한다.');
-//   test.fails('주별 뷰에 일정이 정확히 표시되는지 확인한다');
-//   test.fails('월별 뷰에 일정이 없으면, 일정이 표시되지 않아야 한다.');
-//   test.fails('월별 뷰에 일정이 정확히 표시되는지 확인한다');
-// });
+describe('일정 뷰 및 필터링', () => {
+  test('주별 뷰에 일정이 없으면, 일정이 표시되지 않아야 한다.', async () => {
+    vi.setSystemTime(new Date('2024-08-05T00:00:00Z'));
+
+    const { user } = setup(<App />);
+
+    const viewSelector = screen.getByLabelText('view');
+    await user.selectOptions(viewSelector, 'week');
+
+    const view = screen.getByTestId('event-list');
+    await waitFor(() => {
+      expect(within(view).findAllByText('검색 결과가 없습니다.'));
+    });
+  });
+
+  test('주별 뷰에 일정이 정확히 표시되는지 확인한다');
+  test('월별 뷰에 일정이 없으면, 일정이 표시되지 않아야 한다.');
+  test('월별 뷰에 일정이 정확히 표시되는지 확인한다');
+});
 
 // describe('알림 기능', () => {
 //   test.fails('일정 알림을 설정하고 지정된 시간에 알림이 발생하는지 확인한다');
