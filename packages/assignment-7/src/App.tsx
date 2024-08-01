@@ -47,21 +47,9 @@ import useEvents, {
   weekDays,
 } from './hooks/useEvents';
 
-const fetchHolidays = async (year: number, month: number) => {
-  try {
-    const response = await fetch(`/api/holidays?year=${year}&month=${month}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch holidays');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching holidays:', error);
-    return {};
-  }
-};
-
 function App() {
   const {
+    fetchHolidays,
     events,
     setEvents,
     title,

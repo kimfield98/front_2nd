@@ -37,6 +37,7 @@ export const notificationOptions = [
 export const dummyEvents: Event[] = [];
 
 interface UseEventsReturn {
+  fetchHolidays: (year: number, month: number) => Promise<{ [key: string]: string }>;
   events: Event[];
   setEvents: React.Dispatch<React.SetStateAction<Event[]>>;
   title: string;
@@ -126,7 +127,22 @@ function useEvents(): UseEventsReturn {
   const cancelRef = useRef<HTMLButtonElement>(null);
 
   const toast = useToast();
+
+  const fetchHolidays = async (year: number, month: number) => {
+    try {
+      const response = await fetch(`/api/holidays?year=${year}&month=${month}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch holidays');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching holidays:', error);
+      return {};
+    }
+  };
+
   return {
+    fetchHolidays,
     events,
     setEvents,
     title,
