@@ -181,7 +181,22 @@ describe('일정 뷰 및 필터링', () => {
     });
   });
 
-  test('주별 뷰에 일정이 정확히 표시되는지 확인한다');
+  test('주별 뷰에 일정이 정확히 표시되는지 확인한다', async () => {
+    vi.setSystemTime(new Date('2024-08-20T00:00:00Z'));
+
+    const { user } = setup(<App />);
+
+    const viewSelector = screen.getByLabelText('view');
+    await user.selectOptions(viewSelector, 'week');
+
+    const view = screen.getByTestId('event-list');
+    await waitFor(() => {
+      expect(
+        within(view).getByText('팀 회의', { exact: false })
+      ).toBeInTheDocument();
+    });
+  });
+
   test('월별 뷰에 일정이 없으면, 일정이 표시되지 않아야 한다.');
   test('월별 뷰에 일정이 정확히 표시되는지 확인한다');
 });
