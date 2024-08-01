@@ -50,8 +50,8 @@ import useEvents, {
 function App() {
   const {
     fetchHolidays,
+    fetchEvents,
     events,
-    setEvents,
     title,
     setTitle,
     date,
@@ -101,25 +101,6 @@ function App() {
     cancelRef,
     toast,
   } = useEvents();
-
-  const fetchEvents = async () => {
-    try {
-      const response = await fetch('/api/events');
-      if (!response.ok) {
-        throw new Error('Failed to fetch events');
-      }
-      const data = await response.json();
-      setEvents(data);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      toast({
-        title: '이벤트 로딩 실패',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
 
   const addOrUpdateEvent = async () => {
     if (!title || !date || !startTime || !endTime) {
