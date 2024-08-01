@@ -37,8 +37,14 @@ export const notificationOptions = [
 export const dummyEvents: Event[] = [];
 
 interface UseEventsReturn {
-  fetchHolidays: (year: number, month: number) => Promise<{ [key: string]: string }>;
+  fetchHolidays: (
+    year: number,
+    month: number
+  ) => Promise<{ [key: string]: string }>;
   fetchEvents: () => Promise<void>;
+  addOrUpdateEvent: () => Promise<void>;
+  saveEvent: (eventData: Event) => Promise<void>;
+  validateTime: (start: string, end: string) => void;
   events: Event[];
   setEvents: React.Dispatch<React.SetStateAction<Event[]>>;
   title: string;
@@ -161,9 +167,159 @@ function useEvents(): UseEventsReturn {
     }
   };
 
+  const resetForm = () => {
+    setTitle('');
+    setDate('');
+    setStartTime('');
+    setEndTime('');
+    setDescription('');
+    setLocation('');
+    setCategory('');
+    setEditingEvent(null);
+    setIsRepeating(false);
+    setRepeatType('none');
+    setRepeatInterval(1);
+    setRepeatEndDate('');
+  };
+
+  const saveEvent = async (eventData: Event) => {
+    try {
+      let response;
+      if (editingEvent) {
+        response = await fetch(`/api/events/${eventData.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(eventData),
+        });
+      } else {
+        response = await fetch('/api/events', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(eventData),
+        });
+      }
+
+      if (!response.ok) {
+        throw new Error('Failed to save event');
+      }
+
+      await fetchEvents(); // 이벤트 목록 새로고침
+      setEditingEvent(null);
+      resetForm();
+      toast({
+        title: editingEvent
+          ? '일정이 수정되었습니다.'
+          : '일정이 추가되었습니다.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error('Error saving event:', error);
+      toast({
+        title: '일정 저장 실패',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const validateTime = (start: string, end: string) => {
+    if (!start || !end) return;
+
+    const startDate = new Date(`2000-01-01T${start}`);
+    const endDate = new Date(`2000-01-01T${end}`);
+
+    if (startDate >= endDate) {
+      setStartTimeError('시작 시간은 종료 시간보다 빨라야 합니다.');
+      setEndTimeError('종료 시간은 시작 시간보다 늦어야 합니다.');
+    } else {
+      setStartTimeError(null);
+      setEndTimeError(null);
+    }
+  };
+
+  const addOrUpdateEvent = async () => {
+    if (!title || !date || !startTime || !endTime) {
+      toast({
+        title: '필수 정보를 모두 입력해주세요.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    validateTime(startTime, endTime);
+    if (startTimeError || endTimeError) {
+      toast({
+        title: '시간 설정을 확인해주세요.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const eventData: Event = {
+      id: editingEvent ? editingEvent.id : Date.now(),
+      title,
+      date,
+      startTime,
+      endTime,
+      description,
+      location,
+      category,
+      repeat: {
+        type: isRepeating ? repeatType : 'none',
+        interval: repeatInterval,
+        endDate: repeatEndDate || undefined,
+      },
+      notificationTime,
+    };
+
+    // 날짜 문자열을 Date 객체로 변환하는 함수
+    const parseDateTime = (date: string, time: string): Date => {
+      return new Date(`${date}T${time}`);
+    };
+
+    // 두 일정이 겹치는지 확인하는 함수
+    const isOverlapping = (event1: Event, event2: Event): boolean => {
+      const start1 = parseDateTime(event1.date, event1.startTime);
+      const end1 = parseDateTime(event1.date, event1.endTime);
+      const start2 = parseDateTime(event2.date, event2.startTime);
+      const end2 = parseDateTime(event2.date, event2.endTime);
+
+      return start1 < end2 && start2 < end1;
+    };
+
+    // 겹치는 일정을 찾는 함수
+    const findOverlappingEvents = (newEvent: Event): Event[] => {
+      return events.filter(
+        (event) => event.id !== newEvent.id && isOverlapping(event, newEvent)
+      );
+    };
+
+    const overlapping = findOverlappingEvents(eventData);
+    if (overlapping.length > 0) {
+      setOverlappingEvents(overlapping);
+      setIsOverlapDialogOpen(true);
+    } else {
+      await saveEvent(eventData);
+    }
+  };
+
   return {
     fetchHolidays,
     fetchEvents,
+    addOrUpdateEvent,
+    saveEvent,
+    validateTime,
     events,
     setEvents,
     title,
