@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import {
   Alert,
   AlertDialog,
@@ -30,7 +30,6 @@ import {
   Tooltip,
   Tr,
   useInterval,
-  useToast,
   VStack,
 } from '@chakra-ui/react';
 import {
@@ -40,9 +39,8 @@ import {
   DeleteIcon,
   EditIcon,
 } from '@chakra-ui/icons';
-import {
+import useEvents, {
   categories,
-  dummyEvents,
   Event,
   notificationOptions,
   RepeatType,
@@ -63,40 +61,58 @@ const fetchHolidays = async (year: number, month: number) => {
 };
 
 function App() {
-  const [events, setEvents] = useState<Event[]>(dummyEvents);
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [description, setDescription] = useState('');
-  const [location, setLocation] = useState('');
-  const [category, setCategory] = useState('');
-  const [view, setView] = useState<'week' | 'month'>('month');
-  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
-  const [isRepeating, setIsRepeating] = useState(false);
-  const [repeatType, setRepeatType] = useState<RepeatType>('none');
-  const [repeatInterval, setRepeatInterval] = useState(1);
-  const [repeatEndDate, setRepeatEndDate] = useState('');
-  const [notificationTime, setNotificationTime] = useState(10);
-  const [notifications, setNotifications] = useState<
-    { id: number; message: string }[]
-  >([]);
-  const [notifiedEvents, setNotifiedEvents] = useState<number[]>([]);
-
-  const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
-  const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
-
-  const [startTimeError, setStartTimeError] = useState<string | null>(null);
-  const [endTimeError, setEndTimeError] = useState<string | null>(null);
-
-  const [currentDate, setCurrentDate] = useState(new Date());
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [holidays, setHolidays] = useState<{ [key: string]: string }>({});
-
-  const cancelRef = useRef<HTMLButtonElement>(null);
-
-  const toast = useToast();
+  const {
+    events,
+    setEvents,
+    title,
+    setTitle,
+    date,
+    setDate,
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
+    description,
+    setDescription,
+    location,
+    setLocation,
+    category,
+    setCategory,
+    view,
+    setView,
+    editingEvent,
+    setEditingEvent,
+    isRepeating,
+    setIsRepeating,
+    repeatType,
+    setRepeatType,
+    repeatInterval,
+    setRepeatInterval,
+    repeatEndDate,
+    setRepeatEndDate,
+    notificationTime,
+    setNotificationTime,
+    notifications,
+    setNotifications,
+    notifiedEvents,
+    setNotifiedEvents,
+    isOverlapDialogOpen,
+    setIsOverlapDialogOpen,
+    overlappingEvents,
+    setOverlappingEvents,
+    startTimeError,
+    setStartTimeError,
+    endTimeError,
+    setEndTimeError,
+    currentDate,
+    setCurrentDate,
+    searchTerm,
+    setSearchTerm,
+    holidays,
+    setHolidays,
+    cancelRef,
+    toast,
+  } = useEvents();
 
   const fetchEvents = async () => {
     try {
