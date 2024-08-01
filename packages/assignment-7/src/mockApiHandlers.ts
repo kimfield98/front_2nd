@@ -5,7 +5,7 @@ const initialEvents: Event[] = [
   {
     id: 1,
     title: '팀 회의',
-    date: '2024-07-20',
+    date: '2024-08-20',
     startTime: '10:00',
     endTime: '11:00',
     description: '주간 팀 미팅',
@@ -17,7 +17,7 @@ const initialEvents: Event[] = [
   {
     id: 2,
     title: '점심 약속',
-    date: '2024-07-21',
+    date: '2024-08-21',
     startTime: '12:30',
     endTime: '13:30',
     description: '동료와 점심 식사',
@@ -29,7 +29,7 @@ const initialEvents: Event[] = [
   {
     id: 3,
     title: '프로젝트 마감',
-    date: '2024-07-25',
+    date: '2024-08-25',
     startTime: '09:00',
     endTime: '18:00',
     description: '분기별 프로젝트 마감',
@@ -41,7 +41,7 @@ const initialEvents: Event[] = [
   {
     id: 4,
     title: '생일 파티',
-    date: '2024-07-28',
+    date: '2024-08-28',
     startTime: '19:00',
     endTime: '22:00',
     description: '친구 생일 축하',
@@ -53,7 +53,7 @@ const initialEvents: Event[] = [
   {
     id: 5,
     title: '운동',
-    date: '2024-07-22',
+    date: '2024-08-22',
     startTime: '18:00',
     endTime: '19:00',
     description: '주간 운동',

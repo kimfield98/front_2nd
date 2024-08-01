@@ -10,7 +10,7 @@ import {
 } from 'vitest';
 import { mockApiHandlers, resetMockData } from '../mockApiHandlers';
 import { ReactNode } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 
@@ -44,40 +44,42 @@ const setup = (component: ReactNode) => {
 describe('일정 관리 애플리케이션 통합 테스트', () => {
   describe('일정 CRUD 및 기본 기능', () => {
     test('일정이 정상적으로 렌더링되는지 확인한다', async () => {
-      vi.setSystemTime(new Date('2024-07-01T00:00:00Z'));
+      vi.setSystemTime(new Date('2024-08-01T00:00:00Z'));
       setup(<App />);
 
       const view = screen.getByTestId('event-list');
 
-      const events = await within(view).findAllByText((content) => {
-        return [
+      await waitFor(async () => {
+        const events = await within(view).findAllByText((content) => {
+          return [
+            '팀 회의',
+            '점심 약속',
+            '프로젝트 마감',
+            '생일 파티',
+            '운동',
+            '알림 테스트',
+          ].some((eventText) => content.includes(eventText));
+        });
+
+        const expectedEvents = [
           '팀 회의',
           '점심 약속',
           '프로젝트 마감',
           '생일 파티',
           '운동',
           '알림 테스트',
-        ].some((eventText) => content.includes(eventText));
-      });
-
-      const expectedEvents = [
-        '팀 회의',
-        '점심 약속',
-        '프로젝트 마감',
-        '생일 파티',
-        '운동',
-        '알림 테스트',
-      ];
-      expectedEvents.forEach((expectedEvent) => {
-        const event = events.find(
-          (el) => el.textContent && el.textContent.includes(expectedEvent)
-        );
-        expect(event).toBeInTheDocument();
+        ];
+        expectedEvents.forEach((expectedEvent) => {
+          const event = events.find(
+            (el) => el.textContent && el.textContent.includes(expectedEvent)
+          );
+          expect(event).toBeInTheDocument();
+        });
       });
     });
 
     test('새로운 일정을 생성하고 모든 필드가 정확히 저장되는지 확인한다', async () => {
-      vi.setSystemTime(new Date('2024-07-01T00:00:00Z'));
+      vi.setSystemTime(new Date('2024-08-01T00:00:00Z'));
       const { user } = setup(<App />);
 
       // 입력 필드 선택
@@ -95,7 +97,7 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
 
       // 입력 값 설정
       await user.type(titleInput, '초원');
-      await user.type(dateInput, '2024-07-31');
+      await user.type(dateInput, '2024-08-31');
       await user.type(startTimeInput, '22:00');
       await user.type(endTimeInput, '23:00');
       await user.type(descriptionInput, '퇴근');
