@@ -52,7 +52,7 @@ function EventManager({
         cancelRef={cancelRef}
       />
 
-      <EventNotification {...notificationsState} />
+      <EventNotification notification={{ ...notificationsState }} />
     </Box>
   );
 }

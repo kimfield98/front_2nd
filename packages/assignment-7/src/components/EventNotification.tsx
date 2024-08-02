@@ -6,17 +6,14 @@ import {
   CloseButton,
   VStack,
 } from '@chakra-ui/react';
+import { NotificationsState } from '../types';
 
 interface EventNotificationProps {
-  notifications: { message: string }[];
-  setNotifications: React.Dispatch<
-    React.SetStateAction<{ id: number; message: string }[]>
-  >;
+  notification: NotificationsState;
 }
 
 function EventNotification({
-  notifications,
-  setNotifications,
+  notification: { notifications, setNotifications },
 }: EventNotificationProps) {
   return (
     <>
