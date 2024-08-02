@@ -243,7 +243,7 @@ describe('검색 기능', () => {
   beforeEach(resetMockData);
 
   async function setupSearchTest() {
-    vi.setSystemTime(new Date('2024-08-01'));
+    vi.setSystemTime(new Date('2024-08-01T00:00:00Z'));
     const { user } = setup(<App />);
 
     const eventList = screen.getByTestId('event-list');
@@ -278,15 +278,3 @@ describe('검색 기능', () => {
     expect(await within(eventList).findByText('점심 약속')).toBeInTheDocument();
   });
 });
-
-// describe('공휴일 표시', () => {
-//   test.fails('달력에 1월 1일(신정)이 공휴일로 표시되는지 확인한다');
-//   test.fails('달력에 5월 5일(어린이날)이 공휴일로 표시되는지 확인한다');
-// });
-
-// describe('일정 충돌 감지', () => {
-//   test.fails('겹치는 시간에 새 일정을 추가할 때 경고가 표시되는지 확인한다');
-//   test.fails(
-//     '기존 일정의 시간을 수정하여 충돌이 발생할 때 경고가 표시되는지 확인한다'
-//   );
-// });
