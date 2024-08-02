@@ -36,56 +36,85 @@ export interface Event {
   notificationTime: number; // 분 단위로 저장
 }
 
+interface Notification {
+  id: number;
+  message: string;
+}
+
+export interface EventFormState {
+  title: string;
+  setTitle: Dispatch<SetStateAction<string>>;
+  date: string;
+  setDate: Dispatch<SetStateAction<string>>;
+  startTime: string;
+  setStartTime: Dispatch<SetStateAction<string>>;
+  endTime: string;
+  setEndTime: Dispatch<SetStateAction<string>>;
+  description: string;
+  setDescription: Dispatch<SetStateAction<string>>;
+  location: string;
+  setLocation: Dispatch<SetStateAction<string>>;
+  category: string;
+  setCategory: Dispatch<SetStateAction<string>>;
+  isRepeating: boolean;
+  setIsRepeating: Dispatch<SetStateAction<boolean>>;
+  repeatType: RepeatType;
+  setRepeatType: Dispatch<SetStateAction<RepeatType>>;
+  repeatInterval: number;
+  setRepeatInterval: Dispatch<SetStateAction<number>>;
+  repeatEndDate: string;
+  setRepeatEndDate: Dispatch<SetStateAction<string>>;
+  notificationTime: number;
+  setNotificationTime: Dispatch<SetStateAction<number>>;
+  editingEvent: Event | null;
+  startTimeError: string | null;
+  endTimeError: string | null;
+  validateTime: (startTime: string, endTime: string) => void;
+  handleStartTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleEndTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  editEvent: (event: Event) => void;
+}
+
+export interface ViewState {
+  view: 'week' | 'month';
+  setView: Dispatch<SetStateAction<'week' | 'month'>>;
+}
+
+export interface CurrentDateState {
+  currentDate: Date;
+  setCurrentDate: Dispatch<SetStateAction<Date>>;
+}
+
+export interface NotificationsState {
+  notifications: Notification[];
+  setNotifications: Dispatch<SetStateAction<Notification[]>>;
+  notifiedEvents: number[];
+  setNotifiedEvents: Dispatch<SetStateAction<number[]>>;
+}
+
+export interface SearchState {
+  searchTerm: string;
+  setSearchTerm: Dispatch<SetStateAction<string>>;
+}
+
+export interface DialogState {
+  isOverlapDialogOpen: boolean;
+  setIsOverlapDialogOpen: Dispatch<SetStateAction<boolean>>;
+  overlappingEvents: Event[];
+  setOverlappingEvents: Dispatch<SetStateAction<Event[]>>;
+}
+
 export interface EventManagerProps {
-  formState: {
-    title: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    description: string;
-    location: string;
-    category: string;
-    isRepeating: boolean;
-    repeatType: RepeatType;
-    repeatInterval: number;
-    repeatEndDate: string;
-    notificationTime: number;
-    editingEvent: Event | null;
-    startTimeError: string | null;
-    endTimeError: string | null;
-    validateTime: (startTime: string, endTime: string) => void;
-    editEvent: (event: Event) => void;
-  };
-  viewState: {
-    view: 'week' | 'month';
-    setView: (view: 'week' | 'month') => void;
-  };
-  currentDateState: { currentDate: Date; setCurrentDate: (date: Date) => void };
-  notificationsState: {
-    notifications: {
-      id: number;
-      message: string;
-    }[];
-    setNotifications: Dispatch<
-      SetStateAction<{ id: number; message: string }[]>
-    >;
-    notifiedEvents: number[];
-    setNotifiedEvents: Dispatch<SetStateAction<number[]>>;
-  };
-  searchState: {
-    searchTerm: string;
-    setSearchTerm: Dispatch<SetStateAction<string>>;
-  };
-  dialogState: {
-    isOverlapDialogOpen: boolean;
-    setIsOverlapDialogOpen: Dispatch<SetStateAction<boolean>>;
-    overlappingEvents: Event[];
-    setOverlappingEvents: Dispatch<SetStateAction<Event[]>>;
-  };
+  formState: EventFormState;
+  viewState: ViewState;
+  currentDateState: CurrentDateState;
+  notificationsState: NotificationsState;
+  searchState: SearchState;
+  dialogState: DialogState;
   filteredEvents: Event[];
   holidays: Record<string, string>;
   cancelRef: RefObject<any>;
-  addOrUpdateEvent: (event: Event) => void;
+  addOrUpdateEvent: () => void;
   deleteEvent: (id: number) => void;
   saveEvent: (event: Event) => void;
 }
