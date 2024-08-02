@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { Event, RepeatType } from '../types';
 import { resetFormState } from '../utils';
+import UseValidation from './useValidation';
 
 function UseEventForm() {
   const [title, setTitle] = useState('');
@@ -16,8 +17,14 @@ function UseEventForm() {
   const [repeatInterval, setRepeatInterval] = useState(1);
   const [repeatEndDate, setRepeatEndDate] = useState('');
   const [notificationTime, setNotificationTime] = useState(10);
-  const [startTimeError, setStartTimeError] = useState<string | null>(null);
-  const [endTimeError, setEndTimeError] = useState<string | null>(null);
+
+  const {
+    startTimeError,
+    endTimeError,
+    setStartTimeError,
+    setEndTimeError,
+    validateTime,
+  } = UseValidation();
 
   const resetForm = () => {
     resetFormState([
@@ -50,21 +57,6 @@ function UseEventForm() {
     setRepeatInterval(event.repeat.interval);
     setRepeatEndDate(event.repeat.endDate || '');
     setNotificationTime(event.notificationTime);
-  };
-
-  const validateTime = (start: string, end: string) => {
-    if (!start || !end) return;
-
-    const startDate = new Date(`2000-01-01T${start}`);
-    const endDate = new Date(`2000-01-01T${end}`);
-
-    if (startDate >= endDate) {
-      setStartTimeError('시작 시간은 종료 시간보다 빨라야 합니다.');
-      setEndTimeError('종료 시간은 시작 시간보다 늦어야 합니다.');
-    } else {
-      setStartTimeError(null);
-      setEndTimeError(null);
-    }
   };
 
   const handleStartTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
