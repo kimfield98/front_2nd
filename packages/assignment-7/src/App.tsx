@@ -46,10 +46,10 @@ import {
   WEEK_DAYS_DUMMY,
 } from './dummys';
 import { formatMonth, formatWeek, getDaysInMonth, getWeekDates } from './utils';
+import UseFetchHolidays from './hooks/useFetchHolidays';
 
 function App() {
   const {
-    fetchHolidays,
     fetchEvents,
     addOrUpdateEvent,
     saveEvent,
@@ -96,10 +96,10 @@ function App() {
     currentDate,
     searchTerm,
     setSearchTerm,
-    holidays,
-    setHolidays,
     cancelRef,
   } = useEvents();
+
+  const holidays = UseFetchHolidays(currentDate);
 
   const renderWeekView = () => {
     const weekDates = getWeekDates(currentDate);
@@ -268,16 +268,6 @@ function App() {
       </VStack>
     );
   };
-
-  useEffect(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    const loadHolidays = async () => {
-      const newHolidays = await fetchHolidays(year, month);
-      setHolidays(newHolidays);
-    };
-    loadHolidays();
-  }, [currentDate]);
 
   useEffect(() => {
     fetchEvents();

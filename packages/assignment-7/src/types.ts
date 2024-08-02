@@ -38,10 +38,6 @@ export interface Event {
 }
 
 export type UseEventsReturn = {
-  fetchHolidays: (
-    year: number,
-    month: number
-  ) => Promise<{ [key: string]: string }>;
   fetchEvents: () => Promise<void>;
   addOrUpdateEvent: () => Promise<void>;
   saveEvent: (eventData: Event) => Promise<void>;
@@ -87,8 +83,6 @@ export type UseEventsReturn = {
   setCurrentDate: Dispatch<SetStateAction<Date>>;
   searchTerm: string;
   setSearchTerm: Dispatch<SetStateAction<string>>;
-  holidays: { [key: string]: string };
-  setHolidays: Dispatch<SetStateAction<{ [key: string]: string }>>;
   cancelRef: RefObject<HTMLButtonElement>;
   toast: ReturnType<typeof useToast>;
   repeatType: RepeatType;

@@ -54,23 +54,9 @@ function useEvents(): UseEventsReturn {
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [searchTerm, setSearchTerm] = useState('');
-  const [holidays, setHolidays] = useState<{ [key: string]: string }>({});
 
   const cancelRef = useRef<HTMLButtonElement>(null);
   const toast = useToast();
-
-  const fetchHolidays = async (year: number, month: number) => {
-    try {
-      const response = await fetch(`/api/holidays?year=${year}&month=${month}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch holidays');
-      }
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching holidays:', error);
-      return {};
-    }
-  };
 
   const fetchEvents = async () => {
     try {
@@ -255,7 +241,6 @@ function useEvents(): UseEventsReturn {
   })();
 
   return {
-    fetchHolidays,
     fetchEvents,
     addOrUpdateEvent,
     saveEvent,
@@ -301,8 +286,6 @@ function useEvents(): UseEventsReturn {
     setCurrentDate,
     searchTerm,
     setSearchTerm,
-    holidays,
-    setHolidays,
     cancelRef,
     toast,
     repeatType,
