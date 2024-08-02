@@ -43,10 +43,10 @@ function EventManager({
       </Flex>
 
       <EventAlert
-        {...dialogState}
+        formState={{ ...formState }}
+        dialogState={{ ...dialogState }}
         saveEvent={saveEvent}
         cancelRef={cancelRef}
-        {...formState}
       />
 
       <EventNotification {...notificationsState} />

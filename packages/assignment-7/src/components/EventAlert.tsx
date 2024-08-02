@@ -8,46 +8,37 @@ import {
   Button,
   Text,
 } from '@chakra-ui/react';
+import { DialogState, Event, EventFormState } from '../types';
 
 interface EventAlertProps {
-  isOverlapDialogOpen: boolean;
-  setIsOverlapDialogOpen: (isOpen: boolean) => void;
-  overlappingEvents: any[];
-  saveEvent: (event: any) => void;
-  editingEvent: any;
-  title: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  description: string;
-  location: string;
-  category: string;
-  isRepeating: boolean;
-  repeatType: string;
-  repeatInterval: number;
-  repeatEndDate: string;
-  notificationTime: number;
-  cancelRef: any;
+  formState: EventFormState;
+  dialogState: DialogState;
+  saveEvent: (event: Event) => void;
+  cancelRef: React.RefObject<any>;
 }
 
 function EventAlert({
-  isOverlapDialogOpen,
-  setIsOverlapDialogOpen,
-  overlappingEvents,
+  formState: {
+    title,
+    date,
+    startTime,
+    endTime,
+    description,
+    location,
+    category,
+    isRepeating,
+    repeatType,
+    repeatInterval,
+    repeatEndDate,
+    notificationTime,
+    editingEvent,
+  },
+  dialogState: {
+    isOverlapDialogOpen,
+    setIsOverlapDialogOpen,
+    overlappingEvents,
+  },
   saveEvent,
-  editingEvent,
-  title,
-  date,
-  startTime,
-  endTime,
-  description,
-  location,
-  category,
-  isRepeating,
-  repeatType,
-  repeatInterval,
-  repeatEndDate,
-  notificationTime,
   cancelRef,
 }: EventAlertProps) {
   return (
