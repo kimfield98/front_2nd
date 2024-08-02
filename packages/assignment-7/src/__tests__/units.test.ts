@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+import { navigate } from '../utils';
 
 const getDaysInMonth = (year: number, month: number): number => {
   return new Date(year, month + 1, 0).getDate();
@@ -82,6 +83,26 @@ describe('단위 테스트: 날짜 및 시간 관리', () => {
 
       const outOfRangeDate = new Date('2024-09-01');
       expect(isDateInRange(outOfRangeDate, startDate, endDate)).toBe(false);
+    });
+  });
+
+  describe('navigate 함수', () => {
+    test('주를 기준으로 이전 또는 다음 날짜로 이동한다', () => {
+      const currentDate = new Date('2024-08-20');
+      const prevWeek = navigate(currentDate, 'prev', 'week');
+      const nextWeek = navigate(currentDate, 'next', 'week');
+
+      expect(prevWeek.toISOString().split('T')[0]).toBe('2024-08-13'); // 1주 전
+      expect(nextWeek.toISOString().split('T')[0]).toBe('2024-08-27'); // 1주 후
+    });
+
+    test('월을 기준으로 이전 또는 다음 날짜로 이동한다', () => {
+      const currentDate = new Date('2024-08-20');
+      const prevMonth = navigate(currentDate, 'prev', 'month');
+      const nextMonth = navigate(currentDate, 'next', 'month');
+
+      expect(prevMonth.toISOString().split('T')[0]).toBe('2024-07-20'); // 1달 전
+      expect(nextMonth.toISOString().split('T')[0]).toBe('2024-09-20'); // 1달 후
     });
   });
 });
