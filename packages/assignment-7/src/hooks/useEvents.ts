@@ -9,7 +9,7 @@ import UseNotification from './useNotificaiton';
 
 function useEvents() {
   const formState = UseEventForm();
-  const { events, fetchEvents } = UseFetchEvents();
+  const { events, setEvents, fetchEvents } = UseFetchEvents();
   const toast = useToast();
   const notificationsState = UseNotification(events);
 
@@ -190,6 +190,7 @@ function useEvents() {
       isOverlapDialogOpen,
       setIsOverlapDialogOpen,
       overlappingEvents,
+      setOverlappingEvents,
     },
     currentDateState: { currentDate, setCurrentDate },
     searchState: { searchTerm, setSearchTerm },
