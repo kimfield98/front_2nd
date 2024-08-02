@@ -1,55 +1,17 @@
+// hooks/useEvents.ts
 import { useRef, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
-import { Event, UseEventsReturn } from '../types';
+import { Event } from '../types';
 import { findOverlappingEvents, getWeekDates } from '../utils';
 import UseEventForm from './useEventForm';
 import UseFetchEvents from './useFetchEvents';
 import UseNotification from './useNotificaiton';
 
-function useEvents(): UseEventsReturn {
-  const {
-    title,
-    setTitle,
-    date,
-    setDate,
-    startTime,
-    setStartTime,
-    endTime,
-    setEndTime,
-    description,
-    setDescription,
-    location,
-    setLocation,
-    category,
-    setCategory,
-    editingEvent,
-    setEditingEvent,
-    isRepeating,
-    setIsRepeating,
-    repeatType,
-    setRepeatType,
-    repeatInterval,
-    setRepeatInterval,
-    repeatEndDate,
-    setRepeatEndDate,
-    notificationTime,
-    setNotificationTime,
-    resetForm,
-    editEvent,
-    validateTime,
-    handleStartTimeChange,
-    handleEndTimeChange,
-    startTimeError,
-    endTimeError,
-    setStartTimeError,
-    setEndTimeError,
-  } = UseEventForm();
-
-  const { events, setEvents, fetchEvents } = UseFetchEvents();
+function useEvents() {
+  const formState = UseEventForm();
+  const { events, fetchEvents } = UseFetchEvents();
   const toast = useToast();
-
-  const { notifications, setNotifications, notifiedEvents, setNotifiedEvents } =
-    UseNotification(events);
+  const notificationsState = UseNotification(events);
 
   const [view, setView] = useState<'week' | 'month'>('month');
   const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
@@ -62,7 +24,7 @@ function useEvents(): UseEventsReturn {
   const saveEvent = async (eventData: Event) => {
     try {
       let response;
-      if (editingEvent) {
+      if (formState.editingEvent) {
         response = await fetch(`/api/events/${eventData.id}`, {
           method: 'PUT',
           headers: {
@@ -85,10 +47,10 @@ function useEvents(): UseEventsReturn {
       }
 
       await fetchEvents(); // 이벤트 목록 새로고침
-      setEditingEvent(null);
-      resetForm();
+      formState.setEditingEvent(null);
+      formState.resetForm();
       toast({
-        title: editingEvent
+        title: formState.editingEvent
           ? '일정이 수정되었습니다.'
           : '일정이 추가되었습니다.',
         status: 'success',
@@ -135,6 +97,16 @@ function useEvents(): UseEventsReturn {
   };
 
   const addOrUpdateEvent = async () => {
+    const {
+      title,
+      date,
+      startTime,
+      endTime,
+      startTimeError,
+      endTimeError,
+      validateTime,
+    } = formState;
+
     if (!title || !date || !startTime || !endTime) {
       toast({
         title: '필수 정보를 모두 입력해주세요.',
@@ -157,20 +129,20 @@ function useEvents(): UseEventsReturn {
     }
 
     const eventData: Event = {
-      id: editingEvent ? editingEvent.id : Date.now(),
+      id: formState.editingEvent ? formState.editingEvent.id : Date.now(),
       title,
       date,
       startTime,
       endTime,
-      description,
-      location,
-      category,
+      description: formState.description,
+      location: formState.location,
+      category: formState.category,
       repeat: {
-        type: isRepeating ? repeatType : 'none',
-        interval: repeatInterval,
-        endDate: repeatEndDate || undefined,
+        type: formState.isRepeating ? formState.repeatType : 'none',
+        interval: formState.repeatInterval,
+        endDate: formState.repeatEndDate || undefined,
       },
-      notificationTime,
+      notificationTime: formState.notificationTime,
     };
 
     const overlapping = findOverlappingEvents(eventData, events);
@@ -211,64 +183,21 @@ function useEvents(): UseEventsReturn {
   })();
 
   return {
-    fetchEvents,
-    addOrUpdateEvent,
-    saveEvent,
-    editEvent,
-    deleteEvent,
-    validateTime,
-    handleStartTimeChange,
-    handleEndTimeChange,
-    searchEvents,
-    filteredEvents,
-    events,
-    setEvents,
-    title,
-    setTitle,
-    date,
-    setDate,
-    startTime,
-    setStartTime,
-    endTime,
-    setEndTime,
-    description,
-    setDescription,
-    location,
-    setLocation,
-    category,
-    setCategory,
-    view,
-    setView,
-    notifications,
-    setNotifications,
-    notifiedEvents,
-    setNotifiedEvents,
-    isOverlapDialogOpen,
-    setIsOverlapDialogOpen,
-    overlappingEvents,
-    setOverlappingEvents,
-    startTimeError,
-    setStartTimeError,
-    endTimeError,
-    setEndTimeError,
-    currentDate,
-    setCurrentDate,
-    searchTerm,
-    setSearchTerm,
+    formState,
+    notificationsState,
+    viewState: { view, setView },
+    dialogState: {
+      isOverlapDialogOpen,
+      setIsOverlapDialogOpen,
+      overlappingEvents,
+    },
+    currentDateState: { currentDate, setCurrentDate },
+    searchState: { searchTerm, setSearchTerm },
     cancelRef,
-    toast,
-    repeatType,
-    setRepeatType,
-    repeatInterval,
-    setRepeatInterval,
-    repeatEndDate,
-    setRepeatEndDate,
-    notificationTime,
-    setNotificationTime,
-    editingEvent,
-    setEditingEvent,
-    isRepeating,
-    setIsRepeating,
+    saveEvent,
+    deleteEvent,
+    addOrUpdateEvent,
+    filteredEvents,
   };
 }
 

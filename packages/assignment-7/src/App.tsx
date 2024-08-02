@@ -20,85 +20,43 @@ import EventNotification from './components/EventNotification';
 
 function App() {
   const {
-    saveEvent,
-    editEvent,
-    deleteEvent,
-    filteredEvents,
-    title,
-    date,
-    startTime,
-    endTime,
-    description,
-    location,
-    category,
-    view,
-    setView,
-    editingEvent,
-    isRepeating,
-    repeatType,
-    repeatInterval,
-    repeatEndDate,
-    notificationTime,
-    notifications,
-    setNotifications,
-    notifiedEvents,
-    isOverlapDialogOpen,
-    setIsOverlapDialogOpen,
-    overlappingEvents,
-    currentDate,
-    searchTerm,
-    setSearchTerm,
+    formState,
+    notificationsState,
+    viewState,
+    dialogState,
+    currentDateState,
+    searchState,
     cancelRef,
+    saveEvent,
+    deleteEvent,
     addOrUpdateEvent,
-    validateTime,
-    handleStartTimeChange,
-    handleEndTimeChange,
-    setTitle,
-    setDate,
-    setDescription,
-    setLocation,
-    setCategory,
-    setIsRepeating,
-    setRepeatType,
-    setRepeatInterval,
-    setRepeatEndDate,
-    setNotificationTime,
-    startTimeError,
-    endTimeError,
+    filteredEvents,
   } = useEvents();
 
-  const holidays = UseFetchHolidays(currentDate);
+  const holidays = UseFetchHolidays(currentDateState.currentDate);
 
   const eventFormProps = {
-    title,
-    date,
-    startTime,
-    endTime,
-    description,
-    location,
-    category,
-    isRepeating,
-    notificationTime,
-    repeatType,
-    repeatInterval,
-    repeatEndDate,
+    ...formState,
     addOrUpdateEvent,
-    validateTime,
-    handleStartTimeChange,
-    handleEndTimeChange,
-    setTitle,
-    setDate,
-    setDescription,
-    setLocation,
-    setCategory,
-    setIsRepeating,
-    setRepeatType,
-    setRepeatInterval,
-    setRepeatEndDate,
-    setNotificationTime,
-    startTimeError,
-    endTimeError,
-    editingEvent,
+  };
+
+  const eventAlertProps = {
+    ...dialogState,
+    saveEvent,
+    cancelRef,
+    ...formState,
+  };
+
+  const eventNotificationProps = {
+    ...notificationsState,
+  };
+
+  const eventListProps = {
+    ...searchState,
+    filteredEvents,
+    notifiedEvents: notificationsState.notifiedEvents,
+    deleteEvent,
+    editEvent: formState.editEvent,
   };
 
   return (
@@ -113,12 +71,16 @@ function App() {
             <IconButton
               aria-label="Previous"
               icon={<ChevronLeftIcon />}
-              onClick={() => navigate(currentDate, 'prev', view)}
+              onClick={() =>
+                navigate(currentDateState.currentDate, 'prev', viewState.view)
+              }
             />
             <Select
               aria-label="view"
-              value={view}
-              onChange={(e) => setView(e.target.value as 'week' | 'month')}
+              value={viewState.view}
+              onChange={(e) =>
+                viewState.setView(e.target.value as 'week' | 'month')
+              }
             >
               <option value="week">Week</option>
               <option value="month">Month</option>
@@ -126,56 +88,35 @@ function App() {
             <IconButton
               aria-label="Next"
               icon={<ChevronRightIcon />}
-              onClick={() => navigate(currentDate, 'next', view)}
+              onClick={() =>
+                navigate(currentDateState.currentDate, 'next', viewState.view)
+              }
             />
           </HStack>
 
-          {view === 'week' && (
-            <WeekView {...{ currentDate, filteredEvents, notifiedEvents }} />
+          {viewState.view === 'week' && (
+            <WeekView
+              currentDate={currentDateState.currentDate}
+              filteredEvents={filteredEvents}
+              notifiedEvents={notificationsState.notifiedEvents}
+            />
           )}
-          {view === 'month' && (
+          {viewState.view === 'month' && (
             <MonthView
-              {...{ currentDate, filteredEvents, notifiedEvents, holidays }}
+              currentDate={currentDateState.currentDate}
+              filteredEvents={filteredEvents}
+              notifiedEvents={notificationsState.notifiedEvents}
+              holidays={holidays}
             />
           )}
         </VStack>
 
-        <EventList
-          {...{
-            searchTerm,
-            setSearchTerm,
-            filteredEvents,
-            notifiedEvents,
-            deleteEvent,
-            editEvent,
-          }}
-        />
+        <EventList {...eventListProps} />
       </Flex>
 
-      <EventAlert
-        {...{
-          isOverlapDialogOpen,
-          setIsOverlapDialogOpen,
-          overlappingEvents,
-          saveEvent,
-          editingEvent,
-          title,
-          date,
-          startTime,
-          endTime,
-          description,
-          location,
-          category,
-          isRepeating,
-          repeatType,
-          repeatInterval,
-          repeatEndDate,
-          notificationTime,
-          cancelRef,
-        }}
-      />
+      <EventAlert {...eventAlertProps} />
 
-      <EventNotification {...{ notifications, setNotifications }} />
+      <EventNotification {...eventNotificationProps} />
     </Box>
   );
 }
