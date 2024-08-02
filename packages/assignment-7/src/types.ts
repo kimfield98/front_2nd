@@ -1,4 +1,20 @@
 import { useToast } from '@chakra-ui/react';
+import { Dispatch, SetStateAction } from 'react';
+
+export type ResetFormSetters = [
+  Dispatch<SetStateAction<string>>,
+  Dispatch<SetStateAction<string>>,
+  Dispatch<SetStateAction<string>>,
+  Dispatch<SetStateAction<string>>,
+  Dispatch<SetStateAction<string>>,
+  Dispatch<SetStateAction<string>>,
+  Dispatch<SetStateAction<string>>,
+  Dispatch<SetStateAction<Event | null>>,
+  Dispatch<SetStateAction<boolean>>,
+  Dispatch<SetStateAction<RepeatType>>,
+  Dispatch<SetStateAction<number>>,
+  Dispatch<SetStateAction<string>>
+];
 
 export type RepeatType = 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
 

@@ -2,7 +2,7 @@ import { useToast } from '@chakra-ui/react';
 import { ChangeEvent, useRef, useState } from 'react';
 import { Event, RepeatType, UseEventsReturn } from '../types';
 import { DUMMY_EVENTS } from '../dummys';
-import { getWeekDates } from '../utils';
+import { getWeekDates, resetFormState } from '../utils';
 
 function useEvents(): UseEventsReturn {
   const [events, setEvents] = useState<Event[]>(DUMMY_EVENTS);
@@ -39,6 +39,23 @@ function useEvents(): UseEventsReturn {
   const cancelRef = useRef<HTMLButtonElement>(null);
 
   const toast = useToast();
+
+  const resetForm = () => {
+    resetFormState([
+      setTitle,
+      setDate,
+      setStartTime,
+      setEndTime,
+      setDescription,
+      setLocation,
+      setCategory,
+      setEditingEvent,
+      setIsRepeating,
+      setRepeatType,
+      setRepeatInterval,
+      setRepeatEndDate,
+    ]);
+  };
 
   const fetchHolidays = async (year: number, month: number) => {
     try {
@@ -86,21 +103,6 @@ function useEvents(): UseEventsReturn {
     setRepeatInterval(event.repeat.interval);
     setRepeatEndDate(event.repeat.endDate || '');
     setNotificationTime(event.notificationTime);
-  };
-
-  const resetForm = () => {
-    setTitle('');
-    setDate('');
-    setStartTime('');
-    setEndTime('');
-    setDescription('');
-    setLocation('');
-    setCategory('');
-    setEditingEvent(null);
-    setIsRepeating(false);
-    setRepeatType('none');
-    setRepeatInterval(1);
-    setRepeatEndDate('');
   };
 
   const saveEvent = async (eventData: Event) => {

@@ -1,3 +1,35 @@
+import { ResetFormSetters } from './types';
+
+export const resetFormState = (setters: ResetFormSetters) => {
+  const [
+    setTitle,
+    setDate,
+    setStartTime,
+    setEndTime,
+    setDescription,
+    setLocation,
+    setCategory,
+    setEditingEvent,
+    setIsRepeating,
+    setRepeatType,
+    setRepeatInterval,
+    setRepeatEndDate,
+  ] = setters;
+
+  setTitle('');
+  setDate('');
+  setStartTime('');
+  setEndTime('');
+  setDescription('');
+  setLocation('');
+  setCategory('');
+  setEditingEvent(null);
+  setIsRepeating(false);
+  setRepeatType('none');
+  setRepeatInterval(1);
+  setRepeatEndDate('');
+};
+
 export const getDaysInMonth = (year: number, month: number) => {
   return new Date(year, month + 1, 0).getDate();
 };
