@@ -1,4 +1,3 @@
-import { useToast } from '@chakra-ui/react';
 import { Dispatch, RefObject, SetStateAction } from 'react';
 
 export type ResetFormSetters = [
@@ -37,34 +36,56 @@ export interface Event {
   notificationTime: number; // 분 단위로 저장
 }
 
-export interface EventFormProps {
-  title: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  description: string;
-  location: string;
-  category: string;
-  isRepeating: boolean;
-  notificationTime: number;
-  repeatType: RepeatType;
-  repeatInterval: number;
-  repeatEndDate: string;
-  addOrUpdateEvent: () => void;
-  validateTime: (startTime: string, endTime: string) => void;
-  handleStartTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleEndTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  setTitle: (title: string) => void;
-  setDate: (date: string) => void;
-  setDescription: (description: string) => void;
-  setLocation: (location: string) => void;
-  setCategory: (category: string) => void;
-  setIsRepeating: (isRepeating: boolean) => void;
-  setRepeatType: (repeatType: RepeatType) => void;
-  setRepeatInterval: (repeatInterval: number) => void;
-  setRepeatEndDate: (repeatEndDate: string) => void;
-  setNotificationTime: (notificationTime: number) => void;
-  startTimeError: string | null;
-  endTimeError: string | null;
-  editingEvent: Event | null;
+export interface EventManagerProps {
+  formState: {
+    title: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    description: string;
+    location: string;
+    category: string;
+    isRepeating: boolean;
+    repeatType: RepeatType;
+    repeatInterval: number;
+    repeatEndDate: string;
+    notificationTime: number;
+    editingEvent: Event | null;
+    startTimeError: string | null;
+    endTimeError: string | null;
+    validateTime: (startTime: string, endTime: string) => void;
+    editEvent: (event: Event) => void;
+  };
+  viewState: {
+    view: 'week' | 'month';
+    setView: (view: 'week' | 'month') => void;
+  };
+  currentDateState: { currentDate: Date; setCurrentDate: (date: Date) => void };
+  notificationsState: {
+    notifications: {
+      id: number;
+      message: string;
+    }[];
+    setNotifications: Dispatch<
+      SetStateAction<{ id: number; message: string }[]>
+    >;
+    notifiedEvents: number[];
+    setNotifiedEvents: Dispatch<SetStateAction<number[]>>;
+  };
+  searchState: {
+    searchTerm: string;
+    setSearchTerm: Dispatch<SetStateAction<string>>;
+  };
+  dialogState: {
+    isOverlapDialogOpen: boolean;
+    setIsOverlapDialogOpen: Dispatch<SetStateAction<boolean>>;
+    overlappingEvents: Event[];
+    setOverlappingEvents: Dispatch<SetStateAction<Event[]>>;
+  };
+  filteredEvents: Event[];
+  holidays: Record<string, string>;
+  cancelRef: RefObject<any>;
+  addOrUpdateEvent: (event: Event) => void;
+  deleteEvent: (id: number) => void;
+  saveEvent: (event: Event) => void;
 }

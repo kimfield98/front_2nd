@@ -4,21 +4,7 @@ import EventDisplay from './EventDisplay';
 import EventList from './EventList';
 import EventAlert from './EventAlert';
 import EventNotification from './EventNotification';
-
-interface EventManagerProps {
-  formState: any;
-  viewState: any;
-  currentDateState: any;
-  notificationsState: any;
-  searchState: any;
-  dialogState: any;
-  filteredEvents: any[];
-  holidays: Record<string, string>;
-  cancelRef: any;
-  addOrUpdateEvent: (event: any) => void;
-  deleteEvent: (id: number) => void;
-  saveEvent: (event: any) => void;
-}
+import { EventManagerProps } from '../types';
 
 function EventManager({
   formState,
@@ -33,7 +19,7 @@ function EventManager({
   addOrUpdateEvent,
   deleteEvent,
   saveEvent,
-}:EventManagerProps) {
+}: EventManagerProps) {
   return (
     <Box w="full" h="100vh" m="auto" p={5}>
       <Flex gap={6} h="full">
