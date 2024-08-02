@@ -1,11 +1,12 @@
 import { HStack, IconButton, Select } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { navigate } from '../utils';
+import { ViewType } from '../types';
 
 interface ViewSelectorProps {
   currentDate: Date;
-  view: 'week' | 'month';
-  setView: (view: 'week' | 'month') => void;
+  view: ViewType;
+  setView: (view: ViewType) => void;
 }
 
 function ViewSelector({ currentDate, view, setView }: ViewSelectorProps) {
@@ -19,7 +20,7 @@ function ViewSelector({ currentDate, view, setView }: ViewSelectorProps) {
       <Select
         aria-label="view"
         value={view}
-        onChange={(e) => setView(e.target.value as 'week' | 'month')}
+        onChange={(e) => setView(e.target.value as ViewType)}
       >
         <option value="week">Week</option>
         <option value="month">Month</option>

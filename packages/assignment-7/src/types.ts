@@ -17,6 +17,8 @@ export type ResetFormSetters = [
 
 export type RepeatType = 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
 
+export type ViewType = 'week' | 'month';
+
 interface RepeatInfo {
   type: RepeatType;
   interval: number;
@@ -35,7 +37,6 @@ export interface Event {
   repeat: RepeatInfo;
   notificationTime: number; // 분 단위로 저장
 }
-
 interface Notification {
   id: number;
   message: string;
@@ -76,8 +77,8 @@ export interface EventFormState {
 }
 
 export interface ViewState {
-  view: 'week' | 'month';
-  setView: Dispatch<SetStateAction<'week' | 'month'>>;
+  view: ViewType;
+  setView: Dispatch<SetStateAction<ViewType>>;
 }
 
 export interface CurrentDateState {

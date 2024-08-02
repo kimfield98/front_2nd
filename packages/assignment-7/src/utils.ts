@@ -1,4 +1,4 @@
-import { Event, ResetFormSetters } from './types';
+import { Event, ResetFormSetters, ViewType } from './types';
 
 export const resetFormState = (setters: ResetFormSetters) => {
   const [
@@ -82,7 +82,11 @@ export const findOverlappingEvents = (
   );
 };
 
-export const navigate = (currentDate: Date, direction: 'prev' | 'next', view: 'week' | 'month') => {
+export const navigate = (
+  currentDate: Date,
+  direction: 'prev' | 'next',
+  view: ViewType
+) => {
   const newDate = new Date(currentDate);
   if (view === 'week') {
     newDate.setDate(newDate.getDate() + (direction === 'next' ? 7 : -7));
