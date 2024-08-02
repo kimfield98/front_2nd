@@ -1,4 +1,4 @@
-import { useToast } from "@chakra-ui/react";
+import { useToast } from '@chakra-ui/react';
 
 export type RepeatType = 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
 
@@ -39,8 +39,6 @@ export interface UseEventsReturn {
   getWeekDates: (date: Date) => Date[];
   navigate: (direction: 'prev' | 'next') => void;
   searchEvents: (term: string) => Event[];
-  formatWeek: (date: Date) => string;
-  formatMonth: (date: Date) => string;
   filteredEvents: Event[];
   events: Event[];
   setEvents: React.Dispatch<React.SetStateAction<Event[]>>;

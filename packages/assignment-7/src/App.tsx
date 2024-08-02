@@ -46,6 +46,7 @@ import {
   NOTIFICATION_OPTIONS_DUMMY,
   WEEK_DAYS_DUMMY,
 } from './dummys';
+import { formatMonth, formatWeek } from './utils';
 
 function App() {
   const {
@@ -62,8 +63,6 @@ function App() {
     getDaysInMonth,
     getWeekDates,
     navigate,
-    formatWeek,
-    formatMonth,
     filteredEvents,
     title,
     setTitle,
