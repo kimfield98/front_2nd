@@ -23,7 +23,10 @@ function EventManager({
   return (
     <Box w="full" h="100vh" m="auto" p={5}>
       <Flex gap={6} h="full">
-        <EventForm {...formState} addOrUpdateEvent={addOrUpdateEvent} />
+        <EventForm
+          formState={{ ...formState }}
+          addOrUpdateEvent={addOrUpdateEvent}
+        />
 
         <EventDisplay
           viewState={{ ...viewState }}

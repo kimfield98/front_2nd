@@ -10,39 +10,46 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react';
-import { EventFormProps, RepeatType } from '../types';
+import { EventFormState, RepeatType } from '../types';
 import { CATEGORIES_DUMMY, NOTIFICATION_OPTIONS_DUMMY } from '../dummys';
 
+interface EventFormProps {
+  formState: EventFormState;
+  addOrUpdateEvent: () => void;
+}
+
 function EventForm({
-  title,
-  date,
-  startTime,
-  endTime,
-  description,
-  location,
-  category,
-  isRepeating,
-  notificationTime,
-  repeatType,
-  repeatInterval,
-  repeatEndDate,
+  formState: {
+    title,
+    setTitle,
+    date,
+    setDate,
+    startTime,
+    endTime,
+    description,
+    setDescription,
+    location,
+    setLocation,
+    category,
+    setCategory,
+    isRepeating,
+    setIsRepeating,
+    repeatType,
+    setRepeatType,
+    repeatInterval,
+    setRepeatInterval,
+    repeatEndDate,
+    setRepeatEndDate,
+    notificationTime,
+    setNotificationTime,
+    startTimeError,
+    endTimeError,
+    validateTime,
+    editingEvent,
+    handleStartTimeChange,
+    handleEndTimeChange,
+  },
   addOrUpdateEvent,
-  validateTime,
-  handleStartTimeChange,
-  handleEndTimeChange,
-  setTitle,
-  setDate,
-  setDescription,
-  setLocation,
-  setCategory,
-  setIsRepeating,
-  setRepeatType,
-  setRepeatInterval,
-  setRepeatEndDate,
-  setNotificationTime,
-  startTimeError,
-  endTimeError,
-  editingEvent,
 }: EventFormProps) {
   return (
     <>
