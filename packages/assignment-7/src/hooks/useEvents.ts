@@ -1,61 +1,63 @@
 import { useToast } from '@chakra-ui/react';
-import { ChangeEvent, useRef, useState } from 'react';
-import { Event, RepeatType, UseEventsReturn } from '../types';
+import { useRef, useState } from 'react';
+import { Event, UseEventsReturn } from '../types';
 import { DUMMY_EVENTS } from '../dummys';
-import { getWeekDates, resetFormState } from '../utils';
+import { getWeekDates } from '../utils';
+import UseEventForm from './useEventForm';
 
 function useEvents(): UseEventsReturn {
+  const {
+    title,
+    setTitle,
+    date,
+    setDate,
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
+    description,
+    setDescription,
+    location,
+    setLocation,
+    category,
+    setCategory,
+    editingEvent,
+    setEditingEvent,
+    isRepeating,
+    setIsRepeating,
+    repeatType,
+    setRepeatType,
+    repeatInterval,
+    setRepeatInterval,
+    repeatEndDate,
+    setRepeatEndDate,
+    notificationTime,
+    setNotificationTime,
+    resetForm,
+    editEvent,
+    validateTime,
+    handleStartTimeChange,
+    handleEndTimeChange,
+    startTimeError,
+    endTimeError,
+    setStartTimeError,
+    setEndTimeError,
+  } = UseEventForm();
+
   const [events, setEvents] = useState<Event[]>(DUMMY_EVENTS);
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [description, setDescription] = useState('');
-  const [location, setLocation] = useState('');
-  const [category, setCategory] = useState('');
   const [view, setView] = useState<'week' | 'month'>('month');
-  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
-  const [isRepeating, setIsRepeating] = useState(false);
-  const [repeatType, setRepeatType] = useState<RepeatType>('none');
-  const [repeatInterval, setRepeatInterval] = useState(1);
-  const [repeatEndDate, setRepeatEndDate] = useState('');
-  const [notificationTime, setNotificationTime] = useState(10);
   const [notifications, setNotifications] = useState<
     { id: number; message: string }[]
   >([]);
   const [notifiedEvents, setNotifiedEvents] = useState<number[]>([]);
-
   const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
-
-  const [startTimeError, setStartTimeError] = useState<string | null>(null);
-  const [endTimeError, setEndTimeError] = useState<string | null>(null);
-
   const [currentDate, setCurrentDate] = useState(new Date());
-
   const [searchTerm, setSearchTerm] = useState('');
   const [holidays, setHolidays] = useState<{ [key: string]: string }>({});
 
   const cancelRef = useRef<HTMLButtonElement>(null);
-
   const toast = useToast();
-
-  const resetForm = () => {
-    resetFormState([
-      setTitle,
-      setDate,
-      setStartTime,
-      setEndTime,
-      setDescription,
-      setLocation,
-      setCategory,
-      setEditingEvent,
-      setIsRepeating,
-      setRepeatType,
-      setRepeatInterval,
-      setRepeatEndDate,
-    ]);
-  };
 
   const fetchHolidays = async (year: number, month: number) => {
     try {
@@ -87,22 +89,6 @@ function useEvents(): UseEventsReturn {
         isClosable: true,
       });
     }
-  };
-
-  const editEvent = (event: Event) => {
-    setEditingEvent(event);
-    setTitle(event.title);
-    setDate(event.date);
-    setStartTime(event.startTime);
-    setEndTime(event.endTime);
-    setDescription(event.description);
-    setLocation(event.location);
-    setCategory(event.category);
-    setIsRepeating(event.repeat.type !== 'none');
-    setRepeatType(event.repeat.type);
-    setRepeatInterval(event.repeat.interval);
-    setRepeatEndDate(event.repeat.endDate || '');
-    setNotificationTime(event.notificationTime);
   };
 
   const saveEvent = async (eventData: Event) => {
@@ -177,33 +163,6 @@ function useEvents(): UseEventsReturn {
         duration: 3000,
         isClosable: true,
       });
-    }
-  };
-
-  const handleStartTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newStartTime = e.target.value;
-    setStartTime(newStartTime);
-    validateTime(newStartTime, endTime);
-  };
-
-  const handleEndTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newEndTime = e.target.value;
-    setEndTime(newEndTime);
-    validateTime(startTime, newEndTime);
-  };
-
-  const validateTime = (start: string, end: string) => {
-    if (!start || !end) return;
-
-    const startDate = new Date(`2000-01-01T${start}`);
-    const endDate = new Date(`2000-01-01T${end}`);
-
-    if (startDate >= endDate) {
-      setStartTimeError('시작 시간은 종료 시간보다 빨라야 합니다.');
-      setEndTimeError('종료 시간은 시작 시간보다 늦어야 합니다.');
-    } else {
-      setStartTimeError(null);
-      setEndTimeError(null);
     }
   };
 
@@ -377,18 +336,6 @@ function useEvents(): UseEventsReturn {
     setCategory,
     view,
     setView,
-    editingEvent,
-    setEditingEvent,
-    isRepeating,
-    setIsRepeating,
-    repeatType,
-    setRepeatType,
-    repeatInterval,
-    setRepeatInterval,
-    repeatEndDate,
-    setRepeatEndDate,
-    notificationTime,
-    setNotificationTime,
     notifications,
     setNotifications,
     notifiedEvents,
@@ -409,6 +356,18 @@ function useEvents(): UseEventsReturn {
     setHolidays,
     cancelRef,
     toast,
+    repeatType,
+    setRepeatType,
+    repeatInterval,
+    setRepeatInterval,
+    repeatEndDate,
+    setRepeatEndDate,
+    notificationTime,
+    setNotificationTime,
+    editingEvent,
+    setEditingEvent,
+    isRepeating,
+    setIsRepeating,
   };
 }
 

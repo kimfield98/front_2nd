@@ -1,5 +1,5 @@
 import { useToast } from '@chakra-ui/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, RefObject, SetStateAction } from 'react';
 
 export type ResetFormSetters = [
   Dispatch<SetStateAction<string>>,
@@ -37,7 +37,7 @@ export interface Event {
   notificationTime: number; // 분 단위로 저장
 }
 
-export interface UseEventsReturn {
+export type UseEventsReturn = {
   fetchHolidays: (
     year: number,
     month: number
@@ -55,55 +55,53 @@ export interface UseEventsReturn {
   searchEvents: (term: string) => Event[];
   filteredEvents: Event[];
   events: Event[];
-  setEvents: React.Dispatch<React.SetStateAction<Event[]>>;
+  setEvents: Dispatch<SetStateAction<Event[]>>;
   title: string;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  setTitle: Dispatch<SetStateAction<string>>;
   date: string;
-  setDate: React.Dispatch<React.SetStateAction<string>>;
+  setDate: Dispatch<SetStateAction<string>>;
   startTime: string;
-  setStartTime: React.Dispatch<React.SetStateAction<string>>;
+  setStartTime: Dispatch<SetStateAction<string>>;
   endTime: string;
-  setEndTime: React.Dispatch<React.SetStateAction<string>>;
+  setEndTime: Dispatch<SetStateAction<string>>;
   description: string;
-  setDescription: React.Dispatch<React.SetStateAction<string>>;
+  setDescription: Dispatch<SetStateAction<string>>;
   location: string;
-  setLocation: React.Dispatch<React.SetStateAction<string>>;
+  setLocation: Dispatch<SetStateAction<string>>;
   category: string;
-  setCategory: React.Dispatch<React.SetStateAction<string>>;
+  setCategory: Dispatch<SetStateAction<string>>;
   view: 'week' | 'month';
-  setView: React.Dispatch<React.SetStateAction<'week' | 'month'>>;
-  editingEvent: Event | null;
-  setEditingEvent: React.Dispatch<React.SetStateAction<Event | null>>;
-  isRepeating: boolean;
-  setIsRepeating: React.Dispatch<React.SetStateAction<boolean>>;
-  repeatType: RepeatType;
-  setRepeatType: React.Dispatch<React.SetStateAction<RepeatType>>;
-  repeatInterval: number;
-  setRepeatInterval: React.Dispatch<React.SetStateAction<number>>;
-  repeatEndDate: string;
-  setRepeatEndDate: React.Dispatch<React.SetStateAction<string>>;
-  notificationTime: number;
-  setNotificationTime: React.Dispatch<React.SetStateAction<number>>;
+  setView: Dispatch<SetStateAction<'week' | 'month'>>;
   notifications: { id: number; message: string }[];
-  setNotifications: React.Dispatch<
-    React.SetStateAction<{ id: number; message: string }[]>
-  >;
+  setNotifications: Dispatch<SetStateAction<{ id: number; message: string }[]>>;
   notifiedEvents: number[];
-  setNotifiedEvents: React.Dispatch<React.SetStateAction<number[]>>;
+  setNotifiedEvents: Dispatch<SetStateAction<number[]>>;
   isOverlapDialogOpen: boolean;
-  setIsOverlapDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOverlapDialogOpen: Dispatch<SetStateAction<boolean>>;
   overlappingEvents: Event[];
-  setOverlappingEvents: React.Dispatch<React.SetStateAction<Event[]>>;
+  setOverlappingEvents: Dispatch<SetStateAction<Event[]>>;
   startTimeError: string | null;
-  setStartTimeError: React.Dispatch<React.SetStateAction<string | null>>;
+  setStartTimeError: Dispatch<SetStateAction<string | null>>;
   endTimeError: string | null;
-  setEndTimeError: React.Dispatch<React.SetStateAction<string | null>>;
+  setEndTimeError: Dispatch<SetStateAction<string | null>>;
   currentDate: Date;
-  setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+  setCurrentDate: Dispatch<SetStateAction<Date>>;
   searchTerm: string;
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  setSearchTerm: Dispatch<SetStateAction<string>>;
   holidays: { [key: string]: string };
-  setHolidays: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
-  cancelRef: React.RefObject<HTMLButtonElement>;
+  setHolidays: Dispatch<SetStateAction<{ [key: string]: string }>>;
+  cancelRef: RefObject<HTMLButtonElement>;
   toast: ReturnType<typeof useToast>;
-}
+  repeatType: RepeatType;
+  setRepeatType: Dispatch<SetStateAction<RepeatType>>;
+  repeatInterval: number;
+  setRepeatInterval: Dispatch<SetStateAction<number>>;
+  repeatEndDate: string;
+  setRepeatEndDate: Dispatch<SetStateAction<string>>;
+  notificationTime: number;
+  setNotificationTime: Dispatch<SetStateAction<number>>;
+  editingEvent: Event | null;
+  setEditingEvent: Dispatch<SetStateAction<Event | null>>;
+  isRepeating: boolean;
+  setIsRepeating: Dispatch<SetStateAction<boolean>>;
+};
