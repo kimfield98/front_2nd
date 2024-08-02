@@ -1,22 +1,10 @@
 import {
-  Alert,
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  AlertIcon,
-  AlertTitle,
   Box,
-  Button,
-  CloseButton,
   Flex,
   Heading,
   HStack,
   IconButton,
   Select,
-  Text,
   VStack,
 } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
@@ -28,6 +16,7 @@ import WeekView from './components/WeekView';
 import MonthView from './components/MonthView';
 import EventList from './components/EventList';
 import EventAlert from './components/EventAlert';
+import EventNotification from './components/EventNotification';
 
 function App() {
   const {
@@ -186,23 +175,7 @@ function App() {
         }}
       />
 
-      {notifications.length > 0 && (
-        <VStack position="fixed" top={4} right={4} spacing={2} align="flex-end">
-          {notifications.map((notification, index) => (
-            <Alert key={index} status="info" variant="solid" width="auto">
-              <AlertIcon />
-              <Box flex="1">
-                <AlertTitle fontSize="sm">{notification.message}</AlertTitle>
-              </Box>
-              <CloseButton
-                onClick={() =>
-                  setNotifications((prev) => prev.filter((_, i) => i !== index))
-                }
-              />
-            </Alert>
-          ))}
-        </VStack>
-      )}
+      <EventNotification {...{ notifications, setNotifications }} />
     </Box>
   );
 }
