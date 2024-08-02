@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { Event } from './App';
+import { Event } from './types';
 
 const initialEvents: Event[] = [
   {

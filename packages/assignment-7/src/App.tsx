@@ -42,9 +42,9 @@ import {
 import useEvents, {
   categories,
   notificationOptions,
-  RepeatType,
   weekDays,
 } from './hooks/useEvents';
+import { RepeatType } from './types';
 
 function App() {
   const {
