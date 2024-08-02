@@ -10,23 +10,22 @@ import {
 } from '@chakra-ui/react';
 import { BellIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { NOTIFICATION_OPTIONS_DUMMY } from '../dummys';
+import { Event, SearchState } from '../types';
 
 interface EventListProps {
-  searchTerm: string;
-  setSearchTerm: (searchTerm: string) => void;
-  filteredEvents: any[];
+  searchState: SearchState;
+  filteredEvents: Event[];
   notifiedEvents: number[];
+  editEvent: (event: Event) => void;
   deleteEvent: (id: number) => void;
-  editEvent: (event: any) => void;
 }
 
 function EventList({
-  searchTerm,
-  setSearchTerm,
+  searchState: { searchTerm, setSearchTerm },
   filteredEvents,
   notifiedEvents,
-  deleteEvent,
   editEvent,
+  deleteEvent,
 }: EventListProps) {
   return (
     <VStack data-testid="event-list" w="500px" h="full" overflowY="auto">

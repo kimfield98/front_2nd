@@ -34,11 +34,11 @@ function EventManager({
         />
 
         <EventList
-          {...searchState}
+          searchState={{ ...searchState }}
           filteredEvents={filteredEvents}
           notifiedEvents={notificationsState.notifiedEvents}
-          deleteEvent={deleteEvent}
           editEvent={formState.editEvent}
+          deleteEvent={deleteEvent}
         />
       </Flex>
 
