@@ -1,12 +1,6 @@
-import { Box, Flex } from '@chakra-ui/react';
+import EventManager from './components/EventManager';
 import useEvents from './hooks/useEvents';
 import UseFetchHolidays from './hooks/useFetchHolidays';
-import EventForm from './components/EventForm';
-import EventList from './components/EventList';
-import EventAlert from './components/EventAlert';
-import EventNotification from './components/EventNotification';
-import EventDisplay from './components/EventDisplay';
-import { SetStateAction } from 'react';
 
 function App() {
   const {
@@ -26,36 +20,20 @@ function App() {
   const holidays = UseFetchHolidays(currentDateState.currentDate);
 
   return (
-    <Box w="full" h="100vh" m="auto" p={5}>
-      <Flex gap={6} h="full">
-        <EventForm {...formState} addOrUpdateEvent={addOrUpdateEvent} />
-
-        <EventDisplay
-          viewState={{ ...viewState }}
-          currentDateState={{ ...currentDateState }}
-          notificationsState={{ ...notificationsState }}
-          filteredEvents={filteredEvents}
-          holidays={holidays}
-        />
-
-        <EventList
-          {...searchState}
-          filteredEvents={filteredEvents}
-          notifiedEvents={notificationsState.notifiedEvents}
-          deleteEvent={deleteEvent}
-          editEvent={formState.editEvent}
-        />
-      </Flex>
-
-      <EventAlert
-        {...dialogState}
-        saveEvent={saveEvent}
-        cancelRef={cancelRef}
-        {...formState}
-      />
-
-      <EventNotification {...notificationsState} />
-    </Box>
+    <EventManager
+      formState={formState}
+      notificationsState={notificationsState}
+      viewState={viewState}
+      dialogState={dialogState}
+      currentDateState={currentDateState}
+      searchState={searchState}
+      cancelRef={cancelRef}
+      saveEvent={saveEvent}
+      deleteEvent={deleteEvent}
+      addOrUpdateEvent={addOrUpdateEvent}
+      filteredEvents={filteredEvents}
+      holidays={holidays}
+    />
   );
 }
 
