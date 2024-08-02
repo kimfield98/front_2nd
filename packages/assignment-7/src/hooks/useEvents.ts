@@ -1,9 +1,9 @@
-import { useToast } from '@chakra-ui/react';
 import { useRef, useState } from 'react';
+import { useToast } from '@chakra-ui/react';
 import { Event, UseEventsReturn } from '../types';
-import { DUMMY_EVENTS } from '../dummys';
 import { findOverlappingEvents, getWeekDates } from '../utils';
 import UseEventForm from './useEventForm';
+import UseFetchEvents from './useFetchEvents';
 import UseNotification from './useNotificaiton';
 
 function useEvents(): UseEventsReturn {
@@ -45,7 +45,9 @@ function useEvents(): UseEventsReturn {
     setEndTimeError,
   } = UseEventForm();
 
-  const [events, setEvents] = useState<Event[]>(DUMMY_EVENTS);
+  const { events, setEvents, fetchEvents } = UseFetchEvents();
+  const toast = useToast();
+
   const { notifications, setNotifications, notifiedEvents, setNotifiedEvents } =
     UseNotification(events);
 
@@ -56,26 +58,6 @@ function useEvents(): UseEventsReturn {
   const [searchTerm, setSearchTerm] = useState('');
 
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const toast = useToast();
-
-  const fetchEvents = async () => {
-    try {
-      const response = await fetch('/api/events');
-      if (!response.ok) {
-        throw new Error('Failed to fetch events');
-      }
-      const data = await response.json();
-      setEvents(data);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      toast({
-        title: '이벤트 로딩 실패',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
 
   const saveEvent = async (eventData: Event) => {
     try {

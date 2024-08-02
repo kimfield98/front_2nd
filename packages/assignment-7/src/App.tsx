@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import {
   Alert,
   AlertDialog,
@@ -268,10 +267,6 @@ function App() {
       </VStack>
     );
   };
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
 
   return (
     <Box w="full" h="100vh" m="auto" p={5}>
