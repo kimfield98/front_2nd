@@ -29,7 +29,6 @@ import {
   Thead,
   Tooltip,
   Tr,
-  useInterval,
   VStack,
 } from '@chakra-ui/react';
 import {
@@ -57,7 +56,6 @@ function App() {
     editEvent,
     deleteEvent,
     validateTime,
-    checkUpcomingEvents,
     handleStartTimeChange,
     handleEndTimeChange,
     navigate,
@@ -270,8 +268,6 @@ function App() {
       </VStack>
     );
   };
-
-  useInterval(checkUpcomingEvents, 1000); // 1초마다 체크
 
   useEffect(() => {
     const year = currentDate.getFullYear();

@@ -4,6 +4,7 @@ import { Event, UseEventsReturn } from '../types';
 import { DUMMY_EVENTS } from '../dummys';
 import { getWeekDates } from '../utils';
 import UseEventForm from './useEventForm';
+import UseNotification from './useNotificaiton';
 
 function useEvents(): UseEventsReturn {
   const {
@@ -45,11 +46,10 @@ function useEvents(): UseEventsReturn {
   } = UseEventForm();
 
   const [events, setEvents] = useState<Event[]>(DUMMY_EVENTS);
+  const { notifications, setNotifications, notifiedEvents, setNotifiedEvents } =
+    UseNotification(events);
+
   const [view, setView] = useState<'week' | 'month'>('month');
-  const [notifications, setNotifications] = useState<
-    { id: number; message: string }[]
-  >([]);
-  const [notifiedEvents, setNotifiedEvents] = useState<number[]>([]);
   const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -236,34 +236,6 @@ function useEvents(): UseEventsReturn {
     }
   };
 
-  const checkUpcomingEvents = async () => {
-    const now = new Date();
-    const upcomingEvents = events.filter((event) => {
-      const eventStart = new Date(`${event.date}T${event.startTime}`);
-      const timeDiff = (eventStart.getTime() - now.getTime()) / (1000 * 60);
-      return (
-        timeDiff > 0 &&
-        timeDiff <= event.notificationTime &&
-        !notifiedEvents.includes(event.id)
-      );
-    });
-
-    for (const event of upcomingEvents) {
-      try {
-        setNotifications((prev) => [
-          ...prev,
-          {
-            id: event.id,
-            message: `${event.notificationTime}분 후 ${event.title} 일정이 시작됩니다.`,
-          },
-        ]);
-        setNotifiedEvents((prev) => [...prev, event.id]);
-      } catch (error) {
-        console.error('Error updating notification status:', error);
-      }
-    }
-  };
-
   const navigate = (direction: 'prev' | 'next') => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
@@ -312,7 +284,6 @@ function useEvents(): UseEventsReturn {
     editEvent,
     deleteEvent,
     validateTime,
-    checkUpcomingEvents,
     handleStartTimeChange,
     handleEndTimeChange,
     navigate,

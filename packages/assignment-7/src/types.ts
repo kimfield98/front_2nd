@@ -48,7 +48,6 @@ export type UseEventsReturn = {
   editEvent: (event: Event) => void;
   deleteEvent: (id: number) => Promise<void>;
   validateTime: (start: string, end: string) => void;
-  checkUpcomingEvents: () => Promise<void>;
   handleStartTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleEndTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   navigate: (direction: 'prev' | 'next') => void;
