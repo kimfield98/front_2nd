@@ -2,6 +2,7 @@ import { useToast } from '@chakra-ui/react';
 import { ChangeEvent, useRef, useState } from 'react';
 import { Event, RepeatType, UseEventsReturn } from '../types';
 import { DUMMY_EVENTS } from '../dummys';
+import { getWeekDates } from '../utils';
 
 function useEvents(): UseEventsReturn {
   const [events, setEvents] = useState<Event[]>(DUMMY_EVENTS);
@@ -302,23 +303,6 @@ function useEvents(): UseEventsReturn {
     }
   };
 
-  const getDaysInMonth = (year: number, month: number) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
-  const getWeekDates = (date: Date) => {
-    const day = date.getDay();
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-    const monday = new Date(date.setDate(diff));
-    const weekDates = [];
-    for (let i = 0; i < 7; i++) {
-      const nextDate = new Date(monday);
-      nextDate.setDate(monday.getDate() + i);
-      weekDates.push(nextDate);
-    }
-    return weekDates;
-  };
-
   const navigate = (direction: 'prev' | 'next') => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
@@ -370,8 +354,6 @@ function useEvents(): UseEventsReturn {
     checkUpcomingEvents,
     handleStartTimeChange,
     handleEndTimeChange,
-    getDaysInMonth,
-    getWeekDates,
     navigate,
     searchEvents,
     filteredEvents,

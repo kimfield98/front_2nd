@@ -35,8 +35,6 @@ export interface UseEventsReturn {
   checkUpcomingEvents: () => Promise<void>;
   handleStartTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleEndTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  getDaysInMonth: (year: number, month: number) => number;
-  getWeekDates: (date: Date) => Date[];
   navigate: (direction: 'prev' | 'next') => void;
   searchEvents: (term: string) => Event[];
   filteredEvents: Event[];
