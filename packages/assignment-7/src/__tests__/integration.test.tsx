@@ -3,6 +3,7 @@ import {
   afterAll,
   afterEach,
   beforeAll,
+  beforeEach,
   describe,
   expect,
   test,
@@ -238,11 +239,45 @@ describe('알림 기능', () => {
   });
 });
 
-// describe('검색 기능', () => {
-//   test.fails('제목으로 일정을 검색하고 정확한 결과가 반환되는지 확인한다');
-//   test.fails('제목으로 일정을 검색하고 정확한 결과가 반환되는지 확인한다');
-//   test.fails('검색어를 지우면 모든 일정이 다시 표시되어야 한다');
-// });
+describe('검색 기능', () => {
+  beforeEach(resetMockData);
+
+  async function setupSearchTest() {
+    vi.setSystemTime(new Date('2024-08-01'));
+    const { user } = setup(<App />);
+
+    const eventList = screen.getByTestId('event-list');
+    expect(await within(eventList).findByText('팀 회의')).toBeInTheDocument();
+    expect(await within(eventList).findByText('점심 약속')).toBeInTheDocument();
+
+    const searchField = screen.getByRole('textbox', { name: '일정 검색' });
+
+    return { user, eventList, searchField };
+  }
+
+  test('제목으로 일정을 검색하고 정확한 결과가 반환되는지 확인한다', async () => {
+    const { user, eventList, searchField } = await setupSearchTest();
+
+    await user.type(searchField, '점심 약속');
+
+    expect(await within(eventList).findByText('점심 약속')).toBeInTheDocument();
+    expect(within(eventList).queryByText('팀 회의')).not.toBeInTheDocument();
+  });
+
+  test('검색어를 지우면 모든 일정이 다시 표시되어야 한다', async () => {
+    const { user, eventList, searchField } = await setupSearchTest();
+
+    await user.type(searchField, '점심 약속');
+
+    expect(await within(eventList).findByText('점심 약속')).toBeInTheDocument();
+    expect(within(eventList).queryByText('팀 회의')).not.toBeInTheDocument();
+
+    await user.clear(searchField);
+
+    expect(await within(eventList).findByText('팀 회의')).toBeInTheDocument();
+    expect(await within(eventList).findByText('점심 약속')).toBeInTheDocument();
+  });
+});
 
 // describe('공휴일 표시', () => {
 //   test.fails('달력에 1월 1일(신정)이 공휴일로 표시되는지 확인한다');
