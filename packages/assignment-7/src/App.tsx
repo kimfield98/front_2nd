@@ -88,27 +88,6 @@ function App() {
 
   const holidays = UseFetchHolidays(currentDate);
 
-  const renderWeekView = () => {
-    return (
-      <WeekView
-        currentDate={currentDate}
-        filteredEvents={filteredEvents}
-        notifiedEvents={notifiedEvents}
-      />
-    );
-  };
-
-  const renderMonthView = () => {
-    return (
-      <MonthView
-        currentDate={currentDate}
-        filteredEvents={filteredEvents}
-        notifiedEvents={notifiedEvents}
-        holidays={holidays}
-      />
-    );
-  };
-
   const eventFormProps = {
     title,
     date,
@@ -170,8 +149,21 @@ function App() {
             />
           </HStack>
 
-          {view === 'week' && renderWeekView()}
-          {view === 'month' && renderMonthView()}
+          {view === 'week' && (
+            <WeekView
+              currentDate={currentDate}
+              filteredEvents={filteredEvents}
+              notifiedEvents={notifiedEvents}
+            />
+          )}
+          {view === 'month' && (
+            <MonthView
+              currentDate={currentDate}
+              filteredEvents={filteredEvents}
+              notifiedEvents={notifiedEvents}
+              holidays={holidays}
+            />
+          )}
         </VStack>
 
         <VStack data-testid="event-list" w="500px" h="full" overflowY="auto">
