@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { Event } from './types';
 
-const initialEvents: Event[] = [
+const INITIAL_EVENTS_DUMMY: Event[] = [
   {
     id: 1,
     title: '팀 회의',
@@ -92,7 +92,7 @@ const initialEvents: Event[] = [
   },
 ];
 
-const holidays = {
+const HOLIDAYS_DUMMY = {
   '2024-01-01': '신정',
   '2024-02-09': '설날',
   '2024-02-10': '설날',
@@ -109,10 +109,10 @@ const holidays = {
   '2024-12-25': '크리스마스',
 };
 
-let events = [...initialEvents];
+let events = [...INITIAL_EVENTS_DUMMY];
 
 export const resetMockData = () => {
-  events = [...initialEvents];
+  events = [...INITIAL_EVENTS_DUMMY];
 };
 
 export const mockApiHandlers = [
@@ -161,7 +161,7 @@ export const mockApiHandlers = [
         { status: 400 }
       );
     }
-    const filteredHolidays = Object.entries(holidays).reduce(
+    const filteredHolidays = Object.entries(HOLIDAYS_DUMMY).reduce(
       (acc, [date, name]) => {
         if (date.startsWith(`${year}-${month.padStart(2, '0')}`)) {
           acc[date] = name;

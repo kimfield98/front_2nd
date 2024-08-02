@@ -39,12 +39,13 @@ import {
   DeleteIcon,
   EditIcon,
 } from '@chakra-ui/icons';
-import useEvents, {
-  categories,
-  notificationOptions,
-  weekDays,
-} from './hooks/useEvents';
+import useEvents from './hooks/useEvents';
 import { RepeatType } from './types';
+import {
+  CATEGORIES_DUMMY,
+  NOTIFICATION_OPTIONS_DUMMY,
+  WEEK_DAYS_DUMMY,
+} from './dummys';
 
 function App() {
   const {
@@ -113,7 +114,7 @@ function App() {
         <Table variant="simple" w="full">
           <Thead>
             <Tr>
-              {weekDays.map((day) => (
+              {WEEK_DAYS_DUMMY.map((day) => (
                 <Th key={day} width="14.28%">
                   {day}
                 </Th>
@@ -199,7 +200,7 @@ function App() {
         <Table variant="simple" w="full">
           <Thead>
             <Tr>
-              {weekDays.map((day) => (
+              {WEEK_DAYS_DUMMY.map((day) => (
                 <Th key={day} width="14.28%">
                   {day}
                 </Th>
@@ -367,7 +368,7 @@ function App() {
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="">카테고리 선택</option>
-              {categories.map((cat) => (
+              {CATEGORIES_DUMMY.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
                 </option>
@@ -391,7 +392,7 @@ function App() {
               value={notificationTime}
               onChange={(e) => setNotificationTime(Number(e.target.value))}
             >
-              {notificationOptions.map((option) => (
+              {NOTIFICATION_OPTIONS_DUMMY.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -533,7 +534,7 @@ function App() {
                     <Text>
                       알림:{' '}
                       {
-                        notificationOptions.find(
+                        NOTIFICATION_OPTIONS_DUMMY.find(
                           (option) => option.value === event.notificationTime
                         )?.label
                       }

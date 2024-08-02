@@ -1,23 +1,10 @@
 import { useToast } from '@chakra-ui/react';
 import { ChangeEvent, useRef, useState } from 'react';
 import { Event, RepeatType, UseEventsReturn } from '../types';
-
-export const categories = ['업무', '개인', '가족', '기타'];
-
-export const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
-
-export const notificationOptions = [
-  { value: 1, label: '1분 전' },
-  { value: 10, label: '10분 전' },
-  { value: 60, label: '1시간 전' },
-  { value: 120, label: '2시간 전' },
-  { value: 1440, label: '1일 전' },
-];
-
-export const dummyEvents: Event[] = [];
+import { DUMMY_EVENTS } from '../dummys';
 
 function useEvents(): UseEventsReturn {
-  const [events, setEvents] = useState<Event[]>(dummyEvents);
+  const [events, setEvents] = useState<Event[]>(DUMMY_EVENTS);
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
