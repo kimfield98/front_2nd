@@ -44,12 +44,17 @@ import {
   NOTIFICATION_OPTIONS_DUMMY,
   WEEK_DAYS_DUMMY,
 } from './dummys';
-import { formatMonth, formatWeek, getDaysInMonth, getWeekDates } from './utils';
+import {
+  formatMonth,
+  formatWeek,
+  getDaysInMonth,
+  getWeekDates,
+  navigate,
+} from './utils';
 import UseFetchHolidays from './hooks/useFetchHolidays';
 
 function App() {
   const {
-    fetchEvents,
     addOrUpdateEvent,
     saveEvent,
     editEvent,
@@ -57,7 +62,6 @@ function App() {
     validateTime,
     handleStartTimeChange,
     handleEndTimeChange,
-    navigate,
     filteredEvents,
     title,
     setTitle,
@@ -430,7 +434,7 @@ function App() {
             <IconButton
               aria-label="Previous"
               icon={<ChevronLeftIcon />}
-              onClick={() => navigate('prev')}
+              onClick={() => navigate(currentDate, 'prev', view)}
             />
             <Select
               aria-label="view"
@@ -443,7 +447,7 @@ function App() {
             <IconButton
               aria-label="Next"
               icon={<ChevronRightIcon />}
-              onClick={() => navigate('next')}
+              onClick={() => navigate(currentDate, 'next', view)}
             />
           </HStack>
 

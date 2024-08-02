@@ -81,3 +81,13 @@ export const findOverlappingEvents = (
     (event) => event.id !== newEvent.id && isOverlapping(event, newEvent)
   );
 };
+
+export const navigate = (currentDate: Date, direction: 'prev' | 'next', view: 'week' | 'month') => {
+  const newDate = new Date(currentDate);
+  if (view === 'week') {
+    newDate.setDate(newDate.getDate() + (direction === 'next' ? 7 : -7));
+  } else if (view === 'month') {
+    newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1));
+  }
+  return newDate;
+};

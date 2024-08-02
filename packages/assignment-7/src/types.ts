@@ -46,7 +46,6 @@ export type UseEventsReturn = {
   validateTime: (start: string, end: string) => void;
   handleStartTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleEndTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  navigate: (direction: 'prev' | 'next') => void;
   searchEvents: (term: string) => Event[];
   filteredEvents: Event[];
   events: Event[];

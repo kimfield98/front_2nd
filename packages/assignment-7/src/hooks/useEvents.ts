@@ -182,18 +182,6 @@ function useEvents(): UseEventsReturn {
     }
   };
 
-  const navigate = (direction: 'prev' | 'next') => {
-    setCurrentDate((prevDate) => {
-      const newDate = new Date(prevDate);
-      if (view === 'week') {
-        newDate.setDate(newDate.getDate() + (direction === 'next' ? 7 : -7));
-      } else if (view === 'month') {
-        newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1));
-      }
-      return newDate;
-    });
-  };
-
   const searchEvents = (term: string) => {
     if (!term.trim()) return events;
 
@@ -231,7 +219,6 @@ function useEvents(): UseEventsReturn {
     validateTime,
     handleStartTimeChange,
     handleEndTimeChange,
-    navigate,
     searchEvents,
     filteredEvents,
     events,
