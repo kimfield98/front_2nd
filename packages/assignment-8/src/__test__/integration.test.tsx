@@ -546,5 +546,28 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
       expect(eventList).toHaveTextContent('14:00 - 15:00');
       expect(eventList).toHaveTextContent('반복: 3월마다');
     });
+
+    test('일정 수정 시 반복 유형과 간격을 변경할 수 있다', async () => {
+      const { user } = setup(<App />);
+
+      // 기존 일정 수정 버튼 클릭
+      await user.click(await screen.findByLabelText('Edit event'));
+
+      // 반복 설정 버튼 클릭
+      await user.click(screen.getByText('반복 설정'));
+
+      // 반복 유형과 간격 수정
+      await user.selectOptions(screen.getByLabelText('반복 유형'), '매년');
+      await user.clear(screen.getByLabelText('반복 간격'));
+      await user.type(screen.getByLabelText('반복 간격'), '2');
+
+      // 저장 버튼 클릭
+      await user.click(screen.getByTestId('event-submit-button'));
+
+      // 수정된 일정이 목록에 표시되는지 확인
+      const eventList = screen.getByTestId('event-list');
+      expect(eventList).toHaveTextContent('기존 회의');
+      expect(eventList).toHaveTextContent('반복: 2년마다');
+    });
   });
 });
