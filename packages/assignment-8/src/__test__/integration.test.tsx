@@ -39,7 +39,6 @@ const events: Event[] = [{ ...MOCK_EVENT_1 }];
 // const server = createMockServer(events);
 const server = setupServer(...createMockServer(events));
 
-
 beforeEach(() => {
   vi.useFakeTimers({
     toFake: ['setInterval', 'Date'],
@@ -486,6 +485,66 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
 
       // 알림이 발생하는지 확인
       expect(screen.getByText(expectedMessage)).toBeInTheDocument();
+    });
+  });
+
+  describe('반복 유형 선택 기능', () => {
+    test('일정 생성 시 반복 유형을 선택할 수 있다', async () => {
+      const { user } = setup(<App />);
+
+      // 새 일정 추가 버튼 클릭
+      await user.click(screen.getAllByText('일정 추가')[0]);
+
+      // 일정 정보 입력
+      await user.type(screen.getByLabelText('제목'), '초원 반복');
+      await user.type(screen.getByLabelText('날짜'), '2024-07-05');
+      await user.type(screen.getByLabelText('시작 시간'), '14:00');
+      await user.type(screen.getByLabelText('종료 시간'), '15:00');
+      await user.type(screen.getByLabelText('설명'), '반복 테스트');
+      await user.type(screen.getByLabelText('위치'), '내 방');
+      await user.selectOptions(screen.getByLabelText('카테고리'), '개인');
+      await user.selectOptions(screen.getByLabelText('반복 유형'), '매월');
+      await user.clear(screen.getByLabelText('반복 간격'));
+      await user.type(screen.getByLabelText('반복 간격'), '1');
+
+      // 저장 버튼 클릭
+      await user.click(screen.getByTestId('event-submit-button'));
+
+      // 새로 추가된 일정이 목록에 표시되는지 확인
+      const eventList = screen.getByTestId('event-list');
+      expect(eventList).toHaveTextContent('초원 반복');
+      expect(eventList).toHaveTextContent('2024-07-05');
+      expect(eventList).toHaveTextContent('14:00 - 15:00');
+      expect(eventList).toHaveTextContent('반복 테스트');
+      expect(eventList).toHaveTextContent('내 방');
+      expect(eventList).toHaveTextContent('개인');
+      expect(eventList).toHaveTextContent('반복: 1월마다');
+    });
+
+    test('일정 생성 시 반복 간격을 선택할 수 있다', async () => {
+      const { user } = setup(<App />);
+
+      // 새 일정 추가 버튼 클릭
+      await user.click(screen.getAllByText('일정 추가')[0]);
+
+      // 일정 정보 입력
+      await user.type(screen.getByLabelText('제목'), '초원 반복');
+      await user.type(screen.getByLabelText('날짜'), '2024-07-05');
+      await user.type(screen.getByLabelText('시작 시간'), '14:00');
+      await user.type(screen.getByLabelText('종료 시간'), '15:00');
+      await user.selectOptions(screen.getByLabelText('반복 유형'), '매월');
+      await user.clear(screen.getByLabelText('반복 간격'));
+      await user.type(screen.getByLabelText('반복 간격'), '3');
+
+      // 저장 버튼 클릭
+      await user.click(screen.getByTestId('event-submit-button'));
+
+      // 새로 추가된 일정이 목록에 표시되는지 확인
+      const eventList = screen.getByTestId('event-list');
+      expect(eventList).toHaveTextContent('초원 반복');
+      expect(eventList).toHaveTextContent('2024-07-05');
+      expect(eventList).toHaveTextContent('14:00 - 15:00');
+      expect(eventList).toHaveTextContent('반복: 3월마다');
     });
   });
 });
