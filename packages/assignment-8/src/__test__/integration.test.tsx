@@ -525,9 +525,6 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
     test('일정 생성 시 반복 간격을 선택할 수 있다', async () => {
       const { user } = setup(<App />);
 
-      // 새 일정 추가 버튼 클릭
-      await user.click(screen.getAllByText('일정 추가')[0]);
-
       // 일정 정보 입력
       await user.type(screen.getByLabelText('제목'), '초원 반복');
       await user.type(screen.getByLabelText('날짜'), '2024-07-05');
