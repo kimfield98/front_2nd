@@ -15,10 +15,11 @@ import { userEvent } from '@testing-library/user-event';
 import createMockServer from './createMockServer';
 import { Event } from '../types';
 import { setupServer } from 'msw/node';
+import { ChakraProvider } from '@chakra-ui/react';
 
 const setup = (element: ReactElement) => {
   const user = userEvent.setup();
-  return { ...render(element), user };
+  return { ...render(<ChakraProvider>{element}</ChakraProvider>), user };
 };
 
 const MOCK_EVENT_1: Event = {
