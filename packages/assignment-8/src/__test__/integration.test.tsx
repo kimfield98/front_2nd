@@ -567,5 +567,54 @@ describe('일정 관리 애플리케이션 통합 테스트', () => {
       expect(eventList).toHaveTextContent('기존 회의');
       expect(eventList).toHaveTextContent('반복: 2년마다');
     });
+
+    test('캘린더 뷰에서 반복 일정을 시각적으로 구분하여 표시한다', async () => {
+      // 반복 일정 추가
+      events.length = 0;
+      events.push({
+        id: 1,
+        title: '반복 테스트 일정',
+        date: '2024-07-15',
+        startTime: '09:00',
+        endTime: '10:00',
+        description: '이 일정은 반복됩니다.',
+        location: '여기',
+        category: '개인',
+        repeat: { type: 'monthly', interval: 1 },
+        notificationTime: 10,
+      });
+    
+      const { user } = setup(<App />);
+    
+      // 월별 뷰로 변경
+      await user.selectOptions(screen.getByLabelText('view'), 'month');
+    
+      // 7월 뷰에서 반복 일정 확인
+      let monthView = screen.getByTestId('month-view');
+      let repeatEvent = within(monthView).getByText('반복 테스트 일정');
+      
+      // 7월에 일정이 있는지 확인
+      expect(repeatEvent).toBeInTheDocument();
+    
+      // 8월 뷰로 변경
+      await user.click(screen.getByRole('button', { name: /next/i }));
+    
+      // 8월 뷰에서 반복 일정 확인
+      monthView = screen.getByTestId('month-view');
+      repeatEvent = within(monthView).getByText('반복 테스트 일정');
+      
+      // 8월에 일정이 있는지 확인
+      expect(repeatEvent).toBeInTheDocument();
+    
+      // 9월 뷰로 변경
+      await user.click(screen.getByRole('button', { name: /next/i }));
+    
+      // 9월 뷰에서 반복 일정 확인
+      monthView = screen.getByTestId('month-view');
+      repeatEvent = within(monthView).getByText('반복 테스트 일정');
+      
+      // 9월에 일정이 있는지 확인
+      expect(repeatEvent).toBeInTheDocument();
+    });
   });
 });
