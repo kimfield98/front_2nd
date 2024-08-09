@@ -134,19 +134,6 @@ function App() {
       });
   };
 
-  const weekDates = getWeekDates(currentDate);
-  const expandedWeekEvents = getExpandedEvents(
-    filteredEvents,
-    weekDates[0],
-    weekDates[6]
-  );
-
-  const expandedMonthEvents = getExpandedEvents(
-    filteredEvents,
-    new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
-    new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
-  );
-
   const addOrUpdateEvent = async () => {
     if (!title || !date || !startTime || !endTime) {
       toast({
@@ -196,7 +183,7 @@ function App() {
   };
 
   const renderWeekView = () => {
-    // const weekDates = getWeekDates(currentDate);
+    const weekDates = getWeekDates(currentDate);
     return (
       <VStack data-testid="week-view" align="stretch" w="full" spacing={4}>
         <Heading size="md">{formatWeek(currentDate)}</Heading>
@@ -220,7 +207,7 @@ function App() {
                   width="14.28%"
                 >
                   <Text fontWeight="bold">{date.getDate()}</Text>
-                  {expandedWeekEvents
+                  {getExpandedEvents(filteredEvents, weekDates[0], weekDates[6])
                     .filter(
                       (event) =>
                         formatDate(new Date(event.date)) === formatDate(date)
@@ -294,7 +281,19 @@ function App() {
                               {holiday}
                             </Text>
                           )}
-                          {expandedMonthEvents
+                          {getExpandedEvents(
+                            filteredEvents,
+                            new Date(
+                              currentDate.getFullYear(),
+                              currentDate.getMonth(),
+                              1
+                            ),
+                            new Date(
+                              currentDate.getFullYear(),
+                              currentDate.getMonth() + 1,
+                              0
+                            )
+                          )
                             .filter(
                               (event) => new Date(event.date).getDate() === day
                             )
