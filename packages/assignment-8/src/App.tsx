@@ -43,9 +43,9 @@ import {
   formatDate,
   formatMonth,
   formatWeek,
-  getEventsForDay,
   getWeekDates,
   getWeeksAtMonth,
+  expandRecurringEvent,
 } from './utils/dateUtils';
 import { Event, RepeatType } from './types';
 import { getTimeErrorMessage } from './utils/timeValidation.ts';
@@ -121,6 +121,32 @@ function App() {
 
   const toast = useToast();
 
+  const getExpandedEvents = (
+    baseEvents: Event[],
+    startDate: Date,
+    endDate: Date
+  ) => {
+    return baseEvents
+      .flatMap((event) => expandRecurringEvent(event, endDate))
+      .filter((event) => {
+        const eventDate = new Date(event.date);
+        return eventDate >= startDate && eventDate <= endDate;
+      });
+  };
+
+  const weekDates = getWeekDates(currentDate);
+  const expandedWeekEvents = getExpandedEvents(
+    filteredEvents,
+    weekDates[0],
+    weekDates[6]
+  );
+
+  const expandedMonthEvents = getExpandedEvents(
+    filteredEvents,
+    new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
+    new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+  );
+
   const addOrUpdateEvent = async () => {
     if (!title || !date || !startTime || !endTime) {
       toast({
@@ -170,7 +196,7 @@ function App() {
   };
 
   const renderWeekView = () => {
-    const weekDates = getWeekDates(currentDate);
+    // const weekDates = getWeekDates(currentDate);
     return (
       <VStack data-testid="week-view" align="stretch" w="full" spacing={4}>
         <Heading size="md">{formatWeek(currentDate)}</Heading>
@@ -194,11 +220,10 @@ function App() {
                   width="14.28%"
                 >
                   <Text fontWeight="bold">{date.getDate()}</Text>
-                  {filteredEvents
+                  {expandedWeekEvents
                     .filter(
                       (event) =>
-                        new Date(event.date).toDateString() ===
-                        date.toDateString()
+                        formatDate(new Date(event.date)) === formatDate(date)
                     )
                     .map((event) => {
                       const isNotified = notifiedEvents.includes(event.id);
@@ -269,29 +294,33 @@ function App() {
                               {holiday}
                             </Text>
                           )}
-                          {getEventsForDay(filteredEvents, day).map((event) => {
-                            const isNotified = notifiedEvents.includes(
-                              event.id
-                            );
-                            return (
-                              <Box
-                                key={event.id}
-                                p={1}
-                                my={1}
-                                bg={isNotified ? 'red.100' : 'gray.100'}
-                                borderRadius="md"
-                                fontWeight={isNotified ? 'bold' : 'normal'}
-                                color={isNotified ? 'red.500' : 'inherit'}
-                              >
-                                <HStack spacing={1}>
-                                  {isNotified && <BellIcon />}
-                                  <Text fontSize="sm" noOfLines={1}>
-                                    {event.title}
-                                  </Text>
-                                </HStack>
-                              </Box>
-                            );
-                          })}
+                          {expandedMonthEvents
+                            .filter(
+                              (event) => new Date(event.date).getDate() === day
+                            )
+                            .map((event) => {
+                              const isNotified = notifiedEvents.includes(
+                                event.id
+                              );
+                              return (
+                                <Box
+                                  key={event.id}
+                                  p={1}
+                                  my={1}
+                                  bg={isNotified ? 'red.100' : 'gray.100'}
+                                  borderRadius="md"
+                                  fontWeight={isNotified ? 'bold' : 'normal'}
+                                  color={isNotified ? 'red.500' : 'inherit'}
+                                >
+                                  <HStack spacing={1}>
+                                    {isNotified && <BellIcon />}
+                                    <Text fontSize="sm" noOfLines={1}>
+                                      {event.title}
+                                    </Text>
+                                  </HStack>
+                                </Box>
+                              );
+                            })}
                         </>
                       )}
                     </Td>
