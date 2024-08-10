@@ -245,7 +245,14 @@ function App() {
 
   const renderMonthView = () => {
     const weeks = getWeeksAtMonth(currentDate);
-
+    const uniqueEvents = Array.from(
+      new Set(filteredEvents.map((e) => e.id))
+    ).reduce<Event[]>((acc, id) => {
+      const event = filteredEvents.find((e) => e.id === id);
+      if (event) acc.push(event);
+      return acc;
+    }, []);
+    
     return (
       <VStack data-testid="month-view" align="stretch" w="full" spacing={4}>
         <Heading size="md">{formatMonth(currentDate)}</Heading>
@@ -300,11 +307,7 @@ function App() {
                                 {holiday}
                               </Text>
                             )}
-                            {getExpandedEvents(
-                              filteredEvents,
-                              startDate,
-                              endDate
-                            )
+                            {getExpandedEvents(uniqueEvents, startDate, endDate)
                               .filter(
                                 (event) =>
                                   new Date(event.date).getDate() === day
