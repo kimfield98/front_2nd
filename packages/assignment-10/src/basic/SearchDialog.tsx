@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -139,7 +139,7 @@ const SearchDialog = ({ searchInfo, onClose }: Props) => {
     majors: [],
   });
 
-  const getFilteredLectures = () => {
+  const filteredLectures = useMemo(() => {
     const { query = '', credits, grades, days, times, majors } = searchOptions;
     return lectures
       .filter(
@@ -176,12 +176,14 @@ const SearchDialog = ({ searchInfo, onClose }: Props) => {
           s.range.some((time) => times.includes(time))
         );
       });
-  };
+  }, [lectures, searchOptions]);
 
-  const filteredLectures = getFilteredLectures();
   const lastPage = Math.ceil(filteredLectures.length / PAGE_SIZE);
   const visibleLectures = filteredLectures.slice(0, page * PAGE_SIZE);
-  const allMajors = [...new Set(lectures.map((lecture) => lecture.major))];
+  const allMajors = useMemo(
+    () => [...new Set(lectures.map((lecture) => lecture.major))],
+    [lectures]
+  );
 
   const changeSearchOption = (
     field: keyof SearchOption,
@@ -218,6 +220,7 @@ const SearchDialog = ({ searchInfo, onClose }: Props) => {
       console.log('모든 API 호출 완료 ', end);
       console.log('API 호출에 걸린 시간(ms): ', end - start);
       setLectures(results.flatMap((result) => result.data));
+      console.log('강의 데이터가 성공적으로 로드되었습니다:', results);
     });
   }, []);
 
