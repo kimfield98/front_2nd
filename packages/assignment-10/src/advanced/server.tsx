@@ -8,10 +8,11 @@ import { App } from './App.tsx';
 const app = express();
 const port = 3333;
 
-app.get('*', (req, res) => {
-  const app = ReactDOMServer.renderToString(<App url={req.url}/>);
+let cachedHtml = '';
 
-  res.send(`
+function generateAndCacheHtml() {
+  const app = ReactDOMServer.renderToString(<App url="/" />);
+  cachedHtml = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -23,7 +24,13 @@ app.get('*', (req, res) => {
       <div id="root">${app}</div>
     </body>
     </html>
-  `);
+  `;
+}
+
+generateAndCacheHtml();
+
+app.get('*', (req, res) => {
+  res.send(cachedHtml);
 });
 
 app.listen(port, () => {
