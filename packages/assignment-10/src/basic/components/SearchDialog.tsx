@@ -252,6 +252,11 @@ const SearchDialog = ({ searchInfo, onClose }: Props) => {
     setPage(1);
   }, [searchInfo]);
 
+  const allMajors = useMemo(
+    () => [...new Set(lectures.map((lecture) => lecture.major))],
+    [lectures]
+  );
+
   return (
     <Modal isOpen={Boolean(searchInfo)} onClose={onClose} size="6xl">
       <ModalOverlay />
@@ -376,14 +381,11 @@ const SearchDialog = ({ searchInfo, onClose }: Props) => {
                 </CheckboxGroup>
               </FormControl>
 
-              <FormControl>
-                <FormLabel>전공</FormLabel>
-                <MajorSelection
-                  lectures={lectures}
-                  searchOptions={searchOptions}
-                  changeSearchOption={changeSearchOption}
-                />
-              </FormControl>
+              <MajorSelection
+                allMajors={allMajors}
+                searchOptions={searchOptions}
+                changeSearchOption={changeSearchOption}
+              />
             </HStack>
             <Text align="right">검색결과: {filteredLectures.length}개</Text>
             <Box>
