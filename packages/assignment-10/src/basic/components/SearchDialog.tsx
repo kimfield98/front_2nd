@@ -133,7 +133,6 @@ const LectureRow = memo(
     lecture: Lecture;
     onAddSchedule: (lecture: Lecture) => void;
   }) => {
-    console.log(`LectureRow rendered: ${lecture.id}`);
     return (
       <Tr height={`${ITEM_HEIGHT}px`}>
         <Td width="100px">{lecture.id}</Td>
@@ -161,7 +160,6 @@ const LectureRow = memo(
 
 // TODO: 이 컴포넌트에서 불필요한 연산이 발생하지 않도록 다양한 방식으로 시도해주세요.
 const SearchDialog = ({ searchInfo, onClose }: Props) => {
-  console.log('SearchDialog rendered');
   const { setSchedulesMap } = useScheduleContext();
 
   const [scrollTop, setScrollTop] = useState(0);
@@ -219,7 +217,6 @@ const SearchDialog = ({ searchInfo, onClose }: Props) => {
 
   const lastPage = Math.ceil(filteredLectures.length / PAGE_SIZE);
   const visibleLectures = useMemo(() => {
-    console.log('visibleLectures recalculated');
     return filteredLectures.slice(0, page * PAGE_SIZE);
   }, [filteredLectures, page]);
 
@@ -234,7 +231,6 @@ const SearchDialog = ({ searchInfo, onClose }: Props) => {
 
   const addSchedule = useCallback(
     (lecture: Lecture) => {
-      console.log('addSchedule called');
       if (!searchInfo) return;
 
       const { tableId } = searchInfo;
