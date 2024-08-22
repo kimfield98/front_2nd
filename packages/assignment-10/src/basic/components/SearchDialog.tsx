@@ -124,6 +124,7 @@ const fetchAllLectures = async () =>
     (console.log('API Call 6', performance.now()), cachedFetchLiberalArts()),
   ]);
 
+const ITEM_HEIGHT = 64;
 const LectureRow = memo(
   ({
     lecture,
@@ -134,7 +135,7 @@ const LectureRow = memo(
   }) => {
     console.log(`LectureRow rendered: ${lecture.id}`);
     return (
-      <Tr>
+      <Tr height={`${ITEM_HEIGHT}px`}>
         <Td width="100px">{lecture.id}</Td>
         <Td width="50px">{lecture.grade}</Td>
         <Td width="200px">{lecture.title}</Td>
@@ -163,6 +164,8 @@ const SearchDialog = ({ searchInfo, onClose }: Props) => {
   console.log('SearchDialog rendered');
   const { setSchedulesMap } = useScheduleContext();
 
+  const [scrollTop, setScrollTop] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
   const loaderWrapperRef = useRef<HTMLDivElement>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
   const [lectures, setLectures] = useState<Lecture[]>([]);
@@ -250,6 +253,49 @@ const SearchDialog = ({ searchInfo, onClose }: Props) => {
     },
     [searchInfo, onClose, setSchedulesMap]
   );
+
+  const throttle = <T extends (...args: unknown[]) => void>(
+    func: T,
+    limit: number
+  ): T => {
+    let inThrottle = false;
+    return ((...args: Parameters<T>) => {
+      if (!inThrottle) {
+        func(...args);
+        inThrottle = true;
+        setTimeout(() => (inThrottle = false), limit);
+      }
+    }) as T;
+  };
+
+  const handleScroll = useCallback(() => {
+    const container = containerRef.current;
+    if (container) {
+      setScrollTop(container.scrollTop);
+    }
+  }, []);
+
+  const throttledHandleScroll = useMemo(
+    () => throttle(handleScroll, 100),
+    [handleScroll]
+  );
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('scroll', throttledHandleScroll);
+      return () =>
+        container.removeEventListener('scroll', throttledHandleScroll);
+    }
+  }, [throttledHandleScroll]);
+
+  const startIndex = Math.floor(scrollTop / ITEM_HEIGHT);
+  const endIndex = Math.min(
+    startIndex + Math.ceil(500 / ITEM_HEIGHT), // 500은 컨테이너 높이
+    visibleLectures.length
+  );
+
+  const visibleItems = visibleLectures.slice(startIndex, endIndex);
 
   useEffect(() => {
     const start = performance.now();
@@ -445,16 +491,27 @@ const SearchDialog = ({ searchInfo, onClose }: Props) => {
                 </Thead>
               </Table>
 
-              <Box overflowY="auto" maxH="500px" ref={loaderWrapperRef}>
+              <Box
+                ref={containerRef}
+                overflowY="auto"
+                maxH="500px"
+                onScroll={handleScroll}
+              >
                 <Table size="sm" variant="striped">
                   <Tbody>
-                    {visibleLectures.map((lecture) => (
+                    <Tr height={`${startIndex * ITEM_HEIGHT}px`} />
+                    {visibleItems.map((lecture) => (
                       <LectureRow
                         key={lecture.id}
                         lecture={lecture}
                         onAddSchedule={addSchedule}
                       />
                     ))}
+                    <Tr
+                      height={`${
+                        (visibleLectures.length - endIndex) * ITEM_HEIGHT
+                      }px`}
+                    />
                   </Tbody>
                 </Table>
                 <Box ref={loaderRef} h="20px" />
